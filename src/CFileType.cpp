@@ -1,5 +1,3 @@
-#include <string>
-
 #include "CFileType.h"
 
 using namespace std;

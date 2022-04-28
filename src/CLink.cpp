@@ -4,7 +4,7 @@
 
 using namespace std;
 
-bool CLink::createFile(const string& name)
+bool CLink::createFile()
 {
 
 }

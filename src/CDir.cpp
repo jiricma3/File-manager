@@ -1,10 +1,8 @@
-#include <string>
-
 #include "CDir.h"
 
 using namespace std;
 
-bool CDir::createFile(const string& name)
+bool CDir::createFile()
 {
 
 }

@@ -1,3 +1,6 @@
+#ifndef __CFILESYSTEM_H__
+#define __CFILESYSTEM_H__
+
 #include <string>
 #include <vector>
 #include <memory>
@@ -20,3 +23,5 @@ class CFileSystem
     private:
         vector<shared_ptr<CFile>> m_Files;
 };
+
+#endif

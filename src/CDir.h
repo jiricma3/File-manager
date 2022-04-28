@@ -1,3 +1,6 @@
+#ifndef __CDIR_H__
+#define __CDIR_H__
+
 #include <string>
 
 #include "CFileType.h"
@@ -7,13 +10,13 @@ using namespace std;
 class CDir : public CFileType
 {
     public:
-        bool createFile(const string& name) override;
-        bool copyFile(const string& to) override;
-        bool deleteFile() override;
-        //bool changeDirectory(const string& to) override;
-        bool moveFile(const string& to) override;
-        CFileType * cloneFile() const override;
-
-    protected:
         CDir(const string& name) : CFileType(name, 4096) {}
+        virtual bool createFile();
+        virtual bool copyFile(const string& to);
+        virtual bool deleteFile();
+        //bool changeDirectory(const string& to) override;
+        virtual bool moveFile(const string& to);
+        CFileType * cloneFile() const;
 };
+
+#endif
