@@ -1,4 +1,4 @@
-Plánovač tras
+Správce souborů
 =============
 
 ## Ovládání

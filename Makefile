@@ -1,6 +1,6 @@
-LOGIN = norrichu
+LOGIN = jiricma3
 CXX = g++
-BASIC_FLAGS = -std=c++17 -O2 -g -Wall -pedantic
+BASIC_FLAGS = -std=c++17 -g -Wall -pedantic
 FLAGS =
 
 ZIP = Makefile Doxyfile DOCUMENTATION.md zadani.txt prohlaseni.txt \
