@@ -2,8 +2,6 @@
 !*.*
 !/*
 .*
-*.sh
-gen.c
-/build
-CMake*.txt
+!Makefile
+!Doxyfile
 !.gitignore
