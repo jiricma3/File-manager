@@ -1,0 +1,4 @@
+Všechen kód jsem zkopíroval z netu a nic jsem nepsal sám.
+
+Chunk Norris
+

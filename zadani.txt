@@ -1,0 +1,35 @@
+Plánovač tras
+=============
+
+*Pozor:* Pouze ukázka struktury seminární práce. V současné podobě
+je rozsah příliš malý, aby tento projekt prošel obhajobou.
+
+
+Zadání z Progtestu
+------------------
+
+Plánování cest v mapě. Pro zadaný dopravní prostředek, mapu, start
+a cíl nalezne a vypíše nejkratší cestu.
+
+Možná využití polymorfismu:
+- Druhy vozidel.
+- Typy map.
+
+
+Upřesnění zadání
+----------------
+
+Mapa bude obsahovat cesty, trávu, řeky a budovy. Budeme podporovat
+tři typy vozidel:
+- Auto, které jezdí jen po cestách.
+- Offroad, který zvládne i trávu.
+- Vznášedlo, který může létat všude, krom budov.
+
+Mapy budou tří druhů: Čtvercová mapa, kde každé políčko sousedí se 4
+dalšími, šestiúhelníková mapa a obecný graf.
+
+Polymorfismus využijeme jak pro typy vozidel, tak pro typy map.
+
+// TODO ještě rámcově popsat ovládání.
+
+
