@@ -1,0 +1,9 @@
+*
+!*.*
+!/*
+.*
+*.sh
+gen.c
+/build
+CMake*.txt
+!.gitignore
