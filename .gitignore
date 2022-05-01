@@ -35,7 +35,6 @@
 *.exe
 *.out
 *.app
-*
 
 ### CMake ###
 CMakeLists.txt.user
@@ -90,5 +89,8 @@ _deps
 *.code-workspace
 
 build/
+doc/
+examples/
+jiricma3
 
 # End of https://www.toptal.com/developers/gitignore/api/c++,visualstudiocode,linux,cmake

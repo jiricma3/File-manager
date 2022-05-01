@@ -1,19 +1,19 @@
-Plánovač tras
-=============
-
-*Pozor:* Pouze ukázka struktury seminární práce. V současné podobě
-je rozsah příliš malý, aby tento projekt prošel obhajobou.
-
+Správce souborů
+===============
 
 Zadání z Progtestu
 ------------------
 
-Plánování cest v mapě. Pro zadaný dopravní prostředek, mapu, start
-a cíl nalezne a vypíše nejkratší cestu.
+Program na správu souborů/adresářů (inspirace Midnight Commander).
 
-Možná využití polymorfismu:
-- Druhy vozidel.
-- Typy map.
+Implementujte následující funkcionalitu:
+
+    1. vytváření a mazání souborů/adresářů/symbolických linků ...
+    2. kopírování a přesun souborů/adresářů/symbolických linků ...
+    3. možnost provádět předchozí operace nad množinou soborů definovaných regulárním výrazem
+    4. navigace mezi jednotlivými adresáři
+    5. uživatelské rozhraní: zobrazení adresářů nad kterými se pracuje a vizuální rozlišení souborů/adresářů/symbolických linků ...
+    6. nepoužívejte funkci system, využijte místo toho systémové knihovny unistd.h, dirent.h, stat.h a další
 
 
 Upřesnění zadání
