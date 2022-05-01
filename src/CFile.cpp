@@ -1,6 +1,5 @@
 #include <fstream>
 #include <unistd.h>
-#include <filesystem>
 
 #include "CFile.h"
 
@@ -8,9 +7,7 @@ using namespace std;
 
 bool isAccessible(const string& name)
 {
-    fstream fs;
-    fs.open(name, ios_base::in);
-    return fs.is_open() ? true : false;
+    return access(name.c_str(), F_OK) != -1;
 }
 
 bool CFile::createFile()
@@ -50,6 +47,11 @@ bool CFile::copyFile(const string& to)
     return true;
 }
 
+bool CFile::copyFile(const string& from, const string& to)
+{
+
+}
+
 bool CFile::deleteFile()
 {
     const char * nameC = getFileName().c_str();
@@ -62,6 +64,11 @@ bool CFile::deleteFile()
     remove(nameC);
 
     return true;
+}
+
+bool CFile::deleteFile(const string& src)
+{
+
 }
 
 bool CFile::moveFile(const string& to)
@@ -79,7 +86,12 @@ bool CFile::moveFile(const string& to)
     return true;
 }
 
-CFileType * CFile::cloneFile() const
+bool CFile::moveFile(const string& from, const string& to)
 {
 
+}
+
+CFileType * CFile::cloneFile() const
+{
+    return new CFile(*this);
 }
