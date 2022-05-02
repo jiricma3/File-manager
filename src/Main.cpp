@@ -6,11 +6,14 @@
 int main()
 {
     CFile f = CFile("r");
-    CLink l = CLink("zrzrzzr", "r");
-    l.copyFile("ee");
-    l.moveFile("ttrtrr");
-    l.deleteFile();
-    l.deleteFile("ttrtrr");
+    f.copyFile("rrr");
+    CLink l = CLink("we", "r");
+    CLink lg = CLink("we", "re");
+    l.copyFile("r");
+    l.copyFile("we", "r");
+    l.copyFile("r");
+    l.moveFile("tt");
+    l.moveFile("r", "tt");
 
     return EXIT_SUCCESS;
 }

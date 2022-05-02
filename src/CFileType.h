@@ -10,8 +10,9 @@ class CFileType
     public:
         virtual ~CFileType() = default;
         virtual CFileType * cloneFile() const = 0;
-        string & getFileName();
-        string setPath();
+        const string & getFileName() const;
+        const string setPath() const;
+        const string setPath(const string& path) const;
 
     protected:
         CFileType(const string& name) : m_Name(name) {};

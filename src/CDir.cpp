@@ -1,13 +1,21 @@
 #include <filesystem>
+#include <sys/stat.h>
 
 #include "CDir.h"
 
 using namespace std;
 using namespace std::filesystem;
 
+bool dirExists(const string& path)
+{
+    struct stat info;
+
+    return stat(path.c_str(), &info) == 0;
+}
+
 bool CDir::createFile()
 {
-    string cp = setPath();
+    const string cp = setPath();
 
     if(!create_directory(cp))
     {
@@ -19,26 +27,37 @@ bool CDir::createFile()
 
 bool CDir::copyFile(const string& to)
 {
-    string cp = setPath();
+    const string cp = setPath();
+    const string tcp = setPath(to);
 
-    if(!exists(cp))
+    if(!dirExists(cp) || dirExists(tcp))
     {
         return false;
     }
 
-    copy(cp, to);
+    copy(cp, tcp);
 
     return true;
 }
 
 bool CDir::copyFile(const string& from, const string& to)
 {
+    const string fcp = setPath(from);
+    const string tcp = setPath(to);
 
+    if(!dirExists(fcp) || dirExists(tcp))
+    {
+        return false;
+    }
+
+    copy(fcp, tcp);
+
+    return true;
 }
 
 bool CDir::deleteFile()
 {
-    string cp = setPath();
+    const string cp = setPath();
 
     if(!remove(cp))
     {
@@ -50,7 +69,9 @@ bool CDir::deleteFile()
 
 bool CDir::deleteFile(const string& src)
 {
-    if(!remove(src))
+    const string scp = setPath(src);
+
+    if(!remove(scp))
     {
         return false;
     }
@@ -60,21 +81,33 @@ bool CDir::deleteFile(const string& src)
 
 bool CDir::moveFile(const string& to)
 {
-    string cp = setPath();
+    const string cp = setPath();
+    const string tcp = setPath(to);
 
-    if(!exists(cp))
+
+    if(!dirExists(cp) || dirExists(tcp))
     {
         return false;
     }
 
-    rename(cp, to);
+    rename(cp, tcp);
 
     return true;
 }
 
 bool CDir::moveFile(const string& from, const string& to)
 {
+    const string fcp = setPath(from);
+    const string tcp = setPath(to);
 
+    if(!dirExists(fcp) || dirExists(tcp))
+    {
+        return false;
+    }
+
+    rename(fcp, tcp);
+
+    return true;
 }
 
 CFileType * CDir::cloneFile() const
