@@ -1,4 +1,4 @@
-Všechen kód jsem zkopíroval z netu a nic jsem nepsal sám.
+Prohlašuji, že jsem semestrální práci vytvořil sám, a že jsem program nezkopíroval.
 
-Chunk Norris
+Martin Jiříček
 

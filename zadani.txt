@@ -19,17 +19,40 @@ Implementujte následující funkcionalitu:
 Upřesnění zadání
 ----------------
 
-Mapa bude obsahovat cesty, trávu, řeky a budovy. Budeme podporovat
-tři typy vozidel:
-- Auto, které jezdí jen po cestách.
-- Offroad, který zvládne i trávu.
-- Vznášedlo, který může létat všude, krom budov.
+Pracujeme se třemi druhy souborů. S klasickým souborem, adresářem a symbolickým linkem. Za další také pracujeme s celým úložištěm.
+To znamená, že budeme vypisovat informace o aktuálním adresáři, ale i informace o disku.
+Soubory budou rozlišeny jak barevně, tak i v tloušťce písma. V terminálu bude před kurzorem vypsaná informace, v jakém adresáři
+se právě nacházíme. Program budeme ovládat příkazy do terminálu.
 
-Mapy budou tří druhů: Čtvercová mapa, kde každé políčko sousedí se 4
-dalšími, šestiúhelníková mapa a obecný graf.
+Takové příkazy jsou:
+    -- CREATE - Vytvoření prázdného souboru.
+    -- DELETE - Smazání souboru.
+    -- MOVE - Přesunutí souboru do jiného adresáře. Adresář už musí existovat.
+    -- COPY - Překopírování obsahu souboru.
+    -- LIST - Vypsání obsahu aktuálního adresáře do terminálu.
+    -- MEDIA - Výpis informací o disku.
+    -- CHANGE - Změna aktuálního adresáře.
+    -- PRINT - Výpis obsahu souboru do terminálu v textové formě.
+    -- HELP - Výpis nápovědy, jak program používat a ovládat.
 
-Polymorfismus využijeme jak pro typy vozidel, tak pro typy map.
+Zároveň bude program podporovat sadu přepínačů:
+    -- CREATE -d - Vytvoření prázdného adresáře.
+    -- CREATE -l - Vytvoření symbolického linku.
+    -- COPY -d - Kopírování adresářů.
+    -- COPY -l - Kopírování linků.
+    -- MOVE -d - Přesunutí adresáře.
+    -- MOVE -l - Přesunutí linku.
+    -- PRINT -l - Dlouhý výpis informací o souborech
+    -- Přepínač nápovědy ke každému příkazu.
 
-// TODO ještě rámcově popsat ovládání.
+Polymorfismus je využitý mezi třídami souborů a jejich metodami.
+Existuje hlavní třída CFileType, ze které dědí třídy všech souborů souborů. Třída CFileType je abstraktní.
+Třída CFileSystem je samostatná.
 
+Polymorfními metodami jsou:
+    - createFile() - Vytvoření souboru.
+    - copyFile() - Kopírování souboru.
+    - moveFile() - Přesunutí souboru.
+    - deleteFile() - Smazání souboru.
+    - cloneFile() - Klonování pointeru třídy.
 
