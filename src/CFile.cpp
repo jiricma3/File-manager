@@ -130,6 +130,20 @@ bool CFile::moveFile(const string& from, const string& to)
     return true;
 }
 
+bool CFile::copyFileRegex(const string& expression, const string& to)
+{
+
+}
+
+bool CFile::moveFileRegex(const string& expression, const string& to)
+{
+
+}
+
+bool CFile::deleteFileRegex(const string& expression, const string& from)
+{
+
+}
 CFileType * CFile::cloneFile() const
 {
     return new CFile(*this);

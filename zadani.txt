@@ -10,7 +10,7 @@ Implementujte následující funkcionalitu:
 
     1. vytváření a mazání souborů/adresářů/symbolických linků ...
     2. kopírování a přesun souborů/adresářů/symbolických linků ...
-    3. možnost provádět předchozí operace nad množinou soborů definovaných regulárním výrazem
+    3. možnost provádět předchozí operace nad množinou souborů definovaných regulárním výrazem
     4. navigace mezi jednotlivými adresáři
     5. uživatelské rozhraní: zobrazení adresářů nad kterými se pracuje a vizuální rozlišení souborů/adresářů/symbolických linků ...
     6. nepoužívejte funkci system, využijte místo toho systémové knihovny unistd.h, dirent.h, stat.h a další
@@ -36,10 +36,16 @@ Takové příkazy jsou:
     -- HELP - Výpis nápovědy, jak program používat a ovládat.
 
 Zároveň bude program podporovat sadu přepínačů:
+    -- CREATE -r - Vytvoření souboru pomocí regulárního výrazu.
+    -- CREATE -f - Vytvoření prázdného souboru.
     -- CREATE -d - Vytvoření prázdného adresáře.
     -- CREATE -l - Vytvoření symbolického linku.
+    -- COPY -r - Kopírování souboru pomocí regulárního výrazu.
+    -- COPY -f - Kopírování souboru.
     -- COPY -d - Kopírování adresářů.
     -- COPY -l - Kopírování linků.
+    -- MOVE -r - Přesunutí souboru pomocí regulárního výrazu.
+    -- MOVE -f - Přesunutí souboru.
     -- MOVE -d - Přesunutí adresáře.
     -- MOVE -l - Přesunutí linku.
     -- PRINT -l - Dlouhý výpis informací o souborech
@@ -47,7 +53,6 @@ Zároveň bude program podporovat sadu přepínačů:
 
 Polymorfismus je využitý mezi třídami souborů a jejich metodami.
 Existuje hlavní třída CFileType, ze které dědí třídy všech souborů souborů. Třída CFileType je abstraktní.
-Třída CFileSystem je samostatná.
 
 Polymorfními metodami jsou:
     - createFile() - Vytvoření souboru.

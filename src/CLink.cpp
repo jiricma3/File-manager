@@ -121,6 +121,21 @@ bool CLink::moveFile(const string& from, const string& to)
     return true;
 }
 
+bool CLink::copyFileRegex(const string& expression, const string& to)
+{
+
+}
+
+bool CLink::moveFileRegex(const string& expression, const string& to)
+{
+
+}
+
+bool CLink::deleteFileRegex(const string& expression, const string& from)
+{
+
+}
+
 CFileType * CLink::cloneFile() const
 {
     return new CLink(*this);

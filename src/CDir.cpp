@@ -110,6 +110,21 @@ bool CDir::moveFile(const string& from, const string& to)
     return true;
 }
 
+bool CDir::copyFileRegex(const string& expression, const string& to)
+{
+
+}
+
+bool CDir::moveFileRegex(const string& expression, const string& from)
+{
+
+}
+
+bool CDir::deleteFileRegex(const string& expression, const string& to)
+{
+
+}
+
 CFileType * CDir::cloneFile() const
 {
     return new CDir(*this);
