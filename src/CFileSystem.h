@@ -5,7 +5,10 @@
 #include <vector>
 #include <memory>
 
+#include "CFileType.h"
 #include "CFile.h"
+#include "CDir.h"
+#include "CLink.h"
 
 using namespace std;
 
@@ -15,13 +18,13 @@ class CFileSystem
         CFileSystem() = default;
         ~CFileSystem() = default;
         CFileSystem(const CFileSystem& x) = delete;
-        void printFileSystem(ostream& os) const;
-        bool changeDirectory(const string& to);
-
-    protected:
+        void printFileSystem() const;
+        bool changeDirectory(const string& to) const;
+        vector<string> & getVector();
+        void loadFiles() const;
 
     private:
-        vector<shared_ptr<CFile>> m_Files;
+        static vector<string> m_Files;
 };
 
 #endif

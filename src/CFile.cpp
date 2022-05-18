@@ -1,16 +1,20 @@
 #include <fstream>
 #include <unistd.h>
+#include <filesystem>
+#include <regex>
 
 #include "CFile.h"
+#include "CFileSystem.h"
 
 using namespace std;
+using namespace std::filesystem;
 
 bool isAccessible(const string& name)
 {
-    return access(name.c_str(), F_OK) == 0;
+    return (access(name.c_str(), F_OK) == 0);
 }
 
-bool CFile::createFile()
+bool CFile::createFile() const 
 {
     const string cp = setPath();
 
@@ -28,12 +32,12 @@ bool CFile::createFile()
     return true;
 }
 
-bool CFile::copyFile(const string& to)
+bool CFile::copyFile(const string& to) const 
 {
     const string cp = setPath();
     const string tcp = setPath(to);
 
-    if(!isAccessible(cp) || isAccessible(tcp))
+    if((!isAccessible(cp) || isAccessible(tcp)) || !is_regular_file(cp))
     {
         return false;
     }
@@ -50,19 +54,29 @@ bool CFile::copyFile(const string& to)
     return true;
 }
 
-bool CFile::copyFile(const string& from, const string& to)
+bool CFile::copyFile(const string& from, const string& to) const 
 {
     const string fcp = setPath(from);
     const string tcp = setPath(to);
 
-    if(!isAccessible(fcp) || isAccessible(tcp))
+    if(!isAccessible(fcp) || !is_regular_file(fcp))
     {
         return false;
     }
 
+    string tmp = tcp;
+    int num = 0;
+
+    while(isAccessible(tmp))
+    {
+        tmp = tcp;
+        tmp.append("_");
+        tmp.append(to_string(++num));
+    }
+
     ifstream src(fcp, ios_base::binary);
 
-    ofstream dst(tcp, ios_base::binary);
+    ofstream dst(tmp, ios_base::binary);
 
     dst << src.rdbuf();
 
@@ -72,11 +86,11 @@ bool CFile::copyFile(const string& from, const string& to)
     return true;
 }
 
-bool CFile::deleteFile()
+bool CFile::deleteFile() const 
 {
     const string cp = setPath();
 
-    if(!isAccessible(cp))
+    if(!isAccessible(cp) || !is_regular_file(cp))
     {
         return false;
     }
@@ -86,11 +100,11 @@ bool CFile::deleteFile()
     return true;
 }
 
-bool CFile::deleteFile(const string& src)
+bool CFile::deleteFile(const string& src) const 
 {
     const string scp = setPath(src);
 
-    if(!isAccessible(scp))
+    if(!isAccessible(scp) || !is_regular_file(scp))
     {
         return false;
     }
@@ -100,50 +114,107 @@ bool CFile::deleteFile(const string& src)
     return true;
 }
 
-bool CFile::moveFile(const string& to)
+bool CFile::moveFile(const string& to) const 
 {
     const string cp = setPath();
     const string tcp = setPath(to);
 
-    if(!isAccessible(cp) || isAccessible(tcp))
+    if(!isAccessible(cp) || !is_regular_file(cp))
     {
         return false;
     }
 
-    rename(cp.c_str(), tcp.c_str());
+    string tmp = tcp;
+    int num = 0;
+
+    while(isAccessible(tmp))
+    {
+        tmp = tcp;
+        tmp.append("_");
+        tmp.append(to_string(++num));
+    }
+
+    rename(cp.c_str(), tmp.c_str());
 
     return true;
 }
 
-bool CFile::moveFile(const string& from, const string& to)
+bool CFile::moveFile(const string& from, const string& to) const 
 {
     const string fcp = setPath(from);
     const string tcp = setPath(to);
 
-    if(!isAccessible(fcp) || isAccessible(tcp))
+    if(!isAccessible(fcp) || !is_regular_file(fcp))
     {
         return false;
     }
 
-    rename(fcp.c_str(), tcp.c_str());
+    string tmp = tcp;
+    int num = 0;
+
+    while(isAccessible(tmp))
+    {
+        tmp = tcp;
+        tmp.append("_");
+        tmp.append(to_string(++num));
+    }
+
+    rename(fcp.c_str(), tmp.c_str());
 
     return true;
 }
 
-bool CFile::copyFileRegex(const string& expression, const string& to)
+bool CFile::copyFileRegex(const string& expression, const string& to) const 
 {
+    CFileSystem fs;
+    fs.loadFiles();
+    vector<string> vec = fs.getVector();
 
+    for(const auto& it : vec) 
+    {
+        if(matchRegex(expression, it))
+        {
+            copyFile(it, to);
+        }
+    }
+
+    return true;
 }
 
-bool CFile::moveFileRegex(const string& expression, const string& to)
+bool CFile::moveFileRegex(const string& expression, const string& to) const 
 {
+    CFileSystem fs;
+    fs.loadFiles();
+    vector<string> vec = fs.getVector();
 
+    for(const auto& it : vec) 
+    {
+        if(matchRegex(expression, it))
+        {
+            moveFile(it, to);
+        }
+    }
+
+    return true;
 }
 
-bool CFile::deleteFileRegex(const string& expression, const string& from)
+bool CFile::deleteFileRegex(const string& expression) const 
 {
+    CFileSystem fs;
+    fs.loadFiles();
+    vector<string> vec = fs.getVector();
 
+    for(const auto& it : vec) 
+    {
+        if(matchRegex(expression, it))
+        {
+            deleteFile(it);
+        }
+    }
+
+    return true;
 }
+
 CFileType * CFile::cloneFile() const
 {
     return new CFile(*this);

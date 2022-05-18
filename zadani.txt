@@ -48,11 +48,11 @@ Zároveň bude program podporovat sadu přepínačů:
     -- MOVE -f - Přesunutí souboru.
     -- MOVE -d - Přesunutí adresáře.
     -- MOVE -l - Přesunutí linku.
-    -- PRINT -l - Dlouhý výpis informací o souborech
+    -- PRINT -ll - Dlouhý výpis informací o souborech
     -- Přepínač nápovědy ke každému příkazu.
 
 Polymorfismus je využitý mezi třídami souborů a jejich metodami.
-Existuje hlavní třída CFileType, ze které dědí třídy všech souborů souborů. Třída CFileType je abstraktní.
+Existuje hlavní třída CFileType, ze které dědí třídy všech souborů. Třída CFileType je abstraktní.
 
 Polymorfními metodami jsou:
     - createFile() - Vytvoření souboru.

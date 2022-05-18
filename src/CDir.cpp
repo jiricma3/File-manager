@@ -2,6 +2,7 @@
 #include <sys/stat.h>
 
 #include "CDir.h"
+#include "CFileSystem.h"
 
 using namespace std;
 using namespace std::filesystem;
@@ -13,7 +14,7 @@ bool dirExists(const string& path)
     return stat(path.c_str(), &info) == 0;
 }
 
-bool CDir::createFile()
+bool CDir::createFile() const 
 {
     const string cp = setPath();
 
@@ -25,41 +26,61 @@ bool CDir::createFile()
     return true;
 }
 
-bool CDir::copyFile(const string& to)
+bool CDir::copyFile(const string& to) const 
 {
     const string cp = setPath();
     const string tcp = setPath(to);
 
-    if(!dirExists(cp) || dirExists(tcp))
+    if(!dirExists(cp) || !is_directory(cp))
     {
         return false;
     }
 
-    copy(cp, tcp);
+    string tmp = tcp;
+    int num = 0;
+
+    while(dirExists(tmp))
+    {
+        tmp = tcp;
+        tmp.append("_");
+        tmp.append(to_string(++num));
+    }
+
+    copy(cp, tmp);
 
     return true;
 }
 
-bool CDir::copyFile(const string& from, const string& to)
+bool CDir::copyFile(const string& from, const string& to) const 
 {
     const string fcp = setPath(from);
     const string tcp = setPath(to);
 
-    if(!dirExists(fcp) || dirExists(tcp))
+    if(!dirExists(fcp) || !is_directory(fcp))
     {
         return false;
     }
 
-    copy(fcp, tcp);
+    string tmp = tcp;
+    int num = 0;
+
+    while(dirExists(tmp))
+    {
+        tmp = tcp;
+        tmp.append("_");
+        tmp.append(to_string(++num));
+    }
+
+    copy(fcp, tmp);
 
     return true;
 }
 
-bool CDir::deleteFile()
+bool CDir::deleteFile() const 
 {
     const string cp = setPath();
 
-    if(!remove(cp))
+    if(!is_directory(cp) || !remove(cp))
     {
         return false;
     }
@@ -67,11 +88,11 @@ bool CDir::deleteFile()
     return true;
 }
 
-bool CDir::deleteFile(const string& src)
+bool CDir::deleteFile(const string& src) const 
 {
     const string scp = setPath(src);
 
-    if(!remove(scp))
+    if(!is_directory(scp) || !remove(scp))
     {
         return false;
     }
@@ -79,50 +100,108 @@ bool CDir::deleteFile(const string& src)
     return true;
 }
 
-bool CDir::moveFile(const string& to)
+bool CDir::moveFile(const string& to) const 
 {
     const string cp = setPath();
     const string tcp = setPath(to);
 
 
-    if(!dirExists(cp) || dirExists(tcp))
+    if(!dirExists(cp) || !is_directory(cp))
     {
         return false;
     }
 
-    rename(cp, tcp);
+    string tmp = tcp;
+    int num = 0;
+
+    while(dirExists(tmp))
+    {
+        tmp = tcp;
+        tmp.append("_");
+        tmp.append(to_string(++num));
+    }
+
+    copy(cp, tmp);
+    remove(cp);
 
     return true;
 }
 
-bool CDir::moveFile(const string& from, const string& to)
+bool CDir::moveFile(const string& from, const string& to) const 
 {
     const string fcp = setPath(from);
     const string tcp = setPath(to);
 
-    if(!dirExists(fcp) || dirExists(tcp))
+    if(!dirExists(fcp) || !is_directory(fcp))
     {
         return false;
     }
 
-    rename(fcp, tcp);
+    string tmp = tcp;
+    int num = 0;
+
+    while(dirExists(tmp))
+    {
+        tmp = tcp;
+        tmp.append("_");
+        tmp.append(to_string(++num));
+    }
+
+    copy(fcp, tmp);
+    remove(fcp);
 
     return true;
 }
 
-bool CDir::copyFileRegex(const string& expression, const string& to)
+bool CDir::copyFileRegex(const string& expression, const string& to) const 
 {
+    CFileSystem fs;
+    fs.loadFiles();
+    vector<string> vec = fs.getVector();
+    
+    for(const auto& it : vec)
+    {
+        if(matchRegex(expression, it))
+        {
+            copyFile(it, to);
+        }
+    }
 
+    return true;
 }
 
-bool CDir::moveFileRegex(const string& expression, const string& from)
+bool CDir::moveFileRegex(const string& expression, const string& to) const 
 {
+    CFileSystem fs;
+    fs.loadFiles();
+    vector<string> vec = fs.getVector();
 
+    for(const auto& it : vec) 
+    {
+        if(matchRegex(expression, it))
+        {
+            moveFile(it, to);
+        }
+    }
+
+    return true;
 }
 
-bool CDir::deleteFileRegex(const string& expression, const string& to)
+bool CDir::deleteFileRegex(const string& expression) const
 {
+    CFileSystem fs;
+    fs.loadFiles();
+    vector<string> vec = fs.getVector();
 
+    for(const auto& it : vec) 
+    {
+        if(matchRegex(expression, it))
+        {
+            deleteFile(it);
+        }
+    }
+
+    return true;
 }
 
 CFileType * CDir::cloneFile() const

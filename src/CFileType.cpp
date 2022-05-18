@@ -1,4 +1,5 @@
-#include  <filesystem>
+#include <filesystem>
+#include <regex>
 
 #include "CFileType.h"
 
@@ -22,5 +23,18 @@ const string CFileType::setPath(const string& path) const
     string cp = current_path();
     cp.append("/" + path);
     return cp;
+}
+
+bool CFileType::matchRegex(const string& expression, const string& str) const
+{
+    regex reg (expression);
+    smatch match;
+
+    if(regex_search(str, match, reg))
+    {
+        return true;
+    }
+
+    return false;
 }
 
