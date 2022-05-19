@@ -10,9 +10,18 @@ class CParser
 {
     public:
         CParser() = default;
-        ~CParser() = default;
+        CParser(vector <string> & vec) : m_Vec(vec) { parseCommands(); }
         CParser(const CParser& x) = delete;
-        bool parseCommand(const string& input, vector<string>& output);
+        ~CParser() = default;
+    
+    private:
+        bool parseCommands();
+        void one();
+        void two();
+        void three();
+        void four();
+        void help();
+        vector<string> m_Vec;
 };
 
 #endif

@@ -35,6 +35,7 @@
 *.exe
 *.out
 *.app
+*
 
 ### CMake ###
 CMakeLists.txt.user
@@ -92,5 +93,6 @@ build/
 doc/
 examples/
 jiricma3
+*.zip
 
 # End of https://www.toptal.com/developers/gitignore/api/c++,visualstudiocode,linux,cmake

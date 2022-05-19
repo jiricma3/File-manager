@@ -19,6 +19,7 @@ class CFileSystem
         ~CFileSystem() = default;
         CFileSystem(const CFileSystem& x) = delete;
         void printFileSystem() const;
+        void printFileSystemLong() const;
         bool changeDirectory(const string& to) const;
         vector<string> & getVector();
         void loadFiles() const;

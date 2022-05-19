@@ -6,6 +6,7 @@ using namespace std;
 
 enum code
 {
+    UNDEFINED,
     CREATE,
     COPY,
     MOVE,
@@ -20,6 +21,7 @@ enum code
 
 enum opt
 {
+    UN,
     RF,
     RD,
     RL,
@@ -49,14 +51,14 @@ void initCom()
 
 void initOpt()
 {
-    opts["rf"] = RF;
-    opts["rd"] = RD;
-    opts["rl"] = RL;
-    opts["f"] = F;
-    opts["d"] = D;
-    opts["l"] = L;
-    opts["ll"] = LL;
-    opts["h"] = H;
+    opts["-rf"] = RF;
+    opts["-rd"] = RD;
+    opts["-rl"] = RL;
+    opts["-f"] = F;
+    opts["-d"] = D;
+    opts["-l"] = L;
+    opts["-ll"] = LL;
+    opts["-h"] = H;
 }
 
 int CCommandProcess::getOption() const
@@ -88,20 +90,40 @@ int CCommandProcess::getOption() const
 
         case H:
                 return 7;
+        
+        case UN:
+                return 7;
 
         default:
-                return 8;
+                return 7;
     }
 }
 
 void CCommandProcess::create() const
-{
+{   
     int res = getOption(); 
     CCreate c = CCreate(res, m_From, m_To);
 
-    if(res == 0 || res == 3) c.file();
-    if(res == 1 || res == 4) c.dir();
-    if(res == 2 || res == 5) c.link();
+    if(m_NumOfParams == 1)
+    {
+        if(res == 0 || res == 3) c.file();
+        if(res == 1 || res == 4) c.dir();
+        if(res == 2 || res == 5) c.link();
+        if(res == 7) c.help();
+        return;
+    }
+
+    if(m_Id == "l")
+    {
+        if(res == 0 || res == 3) c.file();
+        if(res == 1 || res == 4) c.dir();
+        if(res == 2 || res == 5) c.link();
+        if(res == 7) c.help();
+    }
+    else
+    {
+        c.help();
+    }
 }
 
 void CCommandProcess::copy() const
@@ -109,9 +131,17 @@ void CCommandProcess::copy() const
     int res = getOption();   
     CCopy c = CCopy(res, m_From, m_To);
 
-    if(res == 0 || res == 3) c.file();
-    if(res == 1 || res == 4) c.dir();
-    if(res == 2 || res == 5) c.link();
+    if(m_NumOfParams == 2)
+    {
+        if(res == 0 || res == 3) c.file();
+        if(res == 1 || res == 4) c.dir();
+        if(res == 2 || res == 5) c.link();
+        if(res == 7) c.help();
+    }
+    else
+    {
+        c.help();
+    }
 }
 
 void CCommandProcess::move() const
@@ -119,9 +149,17 @@ void CCommandProcess::move() const
     int res = getOption();   
     CMove c = CMove(res, m_From, m_To);
 
-    if(res == 0 || res == 3) c.file();
-    if(res == 1 || res == 4) c.dir();
-    if(res == 2 || res == 5) c.link();
+    if(m_NumOfParams == 2)
+    {
+        if(res == 0 || res == 3) c.file();
+        if(res == 1 || res == 4) c.dir();
+        if(res == 2 || res == 5) c.link();
+        if(res == 7) c.help();
+    }
+    else
+    {
+        c.help();
+    }
 }
 
 void CCommandProcess::del() const
@@ -129,20 +167,34 @@ void CCommandProcess::del() const
     int res = getOption();   
     CDelete c = CDelete(res, m_From);
 
-    if(res == 0 || res == 3) c.file();
-    if(res == 1 || res == 4) c.dir();
-    if(res == 2 || res == 5) c.link();
+    if(m_NumOfParams == 1)
+    {
+        if(res == 0 || res == 3) c.file();
+        if(res == 1 || res == 4) c.dir();
+        if(res == 2 || res == 5) c.link();
+        if(res == 7) c.help();
+    }
+    else
+    {
+        c.help();
+    }
 }
 
 void CCommandProcess::print() const
 {
     CPrint c = CPrint(m_Option);
+
+    if(m_NumOfParams == 0)
+    {
+        c.print();
+    }
 }
 
 void CCommandProcess::list() const
 {
     int res = getOption();   
     CList c = CList(res);
+    if(res == 7) c.help();
     c.list();
 }
 
@@ -205,6 +257,10 @@ void CCommandProcess::processCommand() const
 
         case END:
                 exit(EXIT_SUCCESS);
+            break;
+
+        case UNDEFINED:
+                help();
             break;
             
         default:   

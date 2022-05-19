@@ -159,6 +159,11 @@ void CDelete::link() const
 
 void CPrint::print() const
 {
+    if(!is_regular_file(m_Name))
+    {
+        return;
+    }
+
     ifstream f(m_Name);
 
     if(f.is_open())
@@ -173,7 +178,7 @@ void CList::list() const
 
     if(m_Opt == 6)
     {
-        cout << "long list todo" << endl;
+        fs.printFileSystemLong();
     }
     else
     {
@@ -194,6 +199,46 @@ void CHelp::help() const
 
 void CMedia::media() const
 {
-    space_info si = space(current_path());
+    //space_info si = space(current_path());
     cout << "media todo" << endl;
+}
+
+void CCreate::help() const
+{
+    cout << "create help todo" << endl;
+}
+
+void CCopy::help() const
+{
+    cout << "copy help todo" << endl;
+}
+
+void CMove::help() const
+{
+    cout << "move help todo" << endl;
+}
+
+void CDelete::help() const
+{
+    cout << "delete help todo" << endl;
+}
+
+void CPrint::help() const
+{
+    cout << "print help todo" << endl;
+}
+
+void CList::help() const
+{
+    cout << "list help todo" << endl;
+}
+
+void CChange::help() const
+{
+    cout << "change help todo" << endl;
+}
+
+void CMedia::help() const
+{
+    cout << "media help todo" << endl;
 }

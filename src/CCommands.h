@@ -29,10 +29,12 @@ class CCreate : CCommand
 {
     public:
         CCreate(int opt, const string& name, const string& target = "") : CCommand(opt), m_Name(name), m_Target(target) {}
+        CCreate(const CCreate&) = delete;
 
         virtual void file() const override;
         virtual void dir() const override;
         virtual void link() const override;
+        void help() const;
 
     private:
         string m_Name;
@@ -43,10 +45,12 @@ class CCopy : CCommand
 {
     public:
         CCopy(int opt, const string& from, const string& to) : CCommand(opt), m_From(from), m_To(to) {}
+        CCopy(const CCopy&) = delete;
 
         virtual void file() const override;
         virtual void dir() const override;
         virtual void link() const override;
+        void help() const;
         
     private:
         string m_From;
@@ -57,10 +61,12 @@ class CMove : CCommand
 {
     public:
         CMove(int opt, const string& from, const string& to) : CCommand(opt), m_From(from), m_To(to) {}
+        CMove(const CMove&) = delete;
 
         virtual void file() const override;
         virtual void dir() const override;
         virtual void link() const override;
+        void help() const;
         
     private:
         string m_From;
@@ -71,10 +77,12 @@ class CDelete : CCommand
 {
     public:
         CDelete(int opt, const string& from) : CCommand(opt), m_From(from) {}
+        CDelete(const CDelete&) = delete;
 
         virtual void file() const override;
         virtual void dir() const override;
         virtual void link() const override;
+        void help() const;
         
     private:
         string m_From;
@@ -83,11 +91,13 @@ class CDelete : CCommand
 class CPrint
 {
     public:
-        CPrint(const string& name) : m_Name(name) { print(); }
+        CPrint(const string& name) : m_Name(name) {}
+        CPrint(const CPrint&) = delete;
         ~CPrint() = default;
+        void help() const;
+        void print() const;
 
     private:
-        void print() const;
         string m_Name;
 };
 
@@ -95,8 +105,10 @@ class CList
 {
     public:
         CList(int opt = -1) : m_Opt(opt) {}
+        CList(const CList&) = delete;
         ~CList() = default;
         void list() const;
+        void help() const;
     
     private:
         int m_Opt;
@@ -106,20 +118,23 @@ class CMedia
 {
     public:
         CMedia() { media(); }
+        CMedia(const CMedia&) = delete;
         ~CMedia() = default;
-
-    private:
+        void help() const;
         void media() const;
 };
 
 class CChange
 {
     public:
-        CChange(const string& to) : m_To(to) { change(); }
+        CChange(const string& to) : m_To(to) {}
+        CChange() = default;
+        CChange(const CChange&) = delete;
         ~CChange() = default;
+        void help() const;
+        void change() const;
 
     private:
-        void change() const;
         string m_To;
 };
 
@@ -127,9 +142,8 @@ class CHelp
 {
     public:
         CHelp() { help(); }
+        CHelp(const CHelp&) = delete;
         ~CHelp() = default;
-
-    private:
         void help() const;
 };
 

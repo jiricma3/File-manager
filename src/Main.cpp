@@ -6,12 +6,13 @@
 #include "CDir.h"
 #include "CLink.h"
 #include "CCommandProcess.h"
+#include "CParser.h"
 
 using namespace std;
 
 int main()
 {
-    CLink d = CLink("hrhrhr", "jiricma3");
+    //CLink d = CLink("hrhrhr", "jiricma3");
     // CLink df = CLink("hrhrhrhrhrhrhrhrhrhrhrhr", "jiricma3");
     // CLink dd = CLink("kjsdhskjdhksdhskdhrhr", "jiricma3");
     // d.copyFileRegex(".*hr", "jjj");
@@ -26,32 +27,38 @@ int main()
 
     fs.printFileSystem();
     
-    CCommandProcess("create", "f", "kkkkkk");
-    CCommandProcess("print", "prohlaseni.txt");
-    CCommandProcess("copy", "f", "kkkkkk", "ruru");
-    CCommandProcess("move", "f", "kkkkkk", "src/gg");
-    CCommandProcess("media");
-    CCommandProcess("delete", "f", "ruru");
-    CCommandProcess("change", "src");
-    CCommandProcess("list", "ll");
-    CCommandProcess("list");
-    CCommandProcess("help");
-    CCommandProcess("end");
+    // CCommandProcess("creasddte", "f", "kkkkkk");
+    // CCommandProcess("creasddte", "f", "kkkkkk");
+    // CCommandProcess("creasddte", "f", "kkkkkk");
+    // CCommandProcess("creasddte", "f", "kkkkkk");
+    // CCommandProcess("print", "prohlaseni.txt");
+    // CCommandProcess("copy", "t", "kkkkkk", "ruru");
+    // CCommandProcess("move", "f", "kkkkkk", "src/gg");
+    // CCommandProcess("media");
+    // CCommandProcess("delete", "f", "ruru");
+    // CCommandProcess("change", "src");
+    // CCommandProcess("list", "ll");
+    // CCommandProcess("list");
+    // CCommandProcess("help");
+    // CCommandProcess("end");
     string f, l;
     vector<string> vec;
 
-    getline(cin, f);
-    stringstream iss(f);
+    while(1)
+    {
+        getline(cin, f);
+        stringstream iss(f);
 
-    while ( iss >> l) 
-    {    
-        vec.push_back(l);
+        while ( iss >> l) 
+        {    
+            vec.push_back(l);
+        }
+
+        CParser p = CParser(vec);
+        vec.clear();
     }
 
     //cout << "\033[2J" << "\033[1;1H";
-    cout << "\n\n\n";
-    fs.printFileSystem();
-    
 
     return EXIT_SUCCESS;
 }

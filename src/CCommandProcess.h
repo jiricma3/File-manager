@@ -10,8 +10,16 @@ using namespace std;
 class CCommandProcess
 {
     public:
-        CCommandProcess(const string& command, const string& option = "h", const string& from = "", const string& to = "")
-        : m_Command(command), m_Option(option), m_From(from), m_To(to) { processCommand(); }
+        CCommandProcess(int params, const string& command, const string& option, const string& from, const string& to)
+        : m_NumOfParams(params), m_Command(command), m_Option(option), m_From(from), m_To(to) { processCommand(); }
+        CCommandProcess(const string& id, const string& command, const string& option, const string& from, const string& to)
+        : m_Id(id), m_Command(command), m_Option(option), m_From(from), m_To(to) { processCommand(); }
+        CCommandProcess(int params, const string& command, const string& option, const string& from)
+        : m_NumOfParams(params), m_Command(command), m_Option(option), m_From(from) { processCommand(); }
+        CCommandProcess(int params, const string& command, const string& option)
+        : m_NumOfParams(params), m_Command(command), m_Option(option) { processCommand(); }
+        CCommandProcess(int params, const string& command)
+        : m_NumOfParams(params), m_Command(command) { processCommand(); }
 
     private:
         int getOption() const;
@@ -25,6 +33,8 @@ class CCommandProcess
         void list() const;
         void change() const;
         void help() const;
+        int m_NumOfParams = -1;
+        string m_Id;
         string m_Command;
         string m_Option;
         string m_From;
