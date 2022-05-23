@@ -1,3 +1,5 @@
+#Makefile vypůjčený z ukázkové semestrální práce od Radka Huška
+
 LOGIN = jiricma3
 CXX = g++
 BASIC_FLAGS = -std=c++17 -g -Wall -pedantic

@@ -41,17 +41,17 @@ int main()
     // CCommandProcess("list");
     // CCommandProcess("help");
     // CCommandProcess("end");
-    string f, l;
+    string word, line;
     vector<string> vec;
 
     while(1)
     {
-        getline(cin, f);
-        stringstream iss(f);
+        getline(cin, line);
+        stringstream iss(line);
 
-        while ( iss >> l) 
+        while ( iss >> word) 
         {    
-            vec.push_back(l);
+            vec.push_back(word);
         }
 
         CParser p = CParser(vec);

@@ -21,11 +21,11 @@ class CFileSystem
         void printFileSystem() const;
         void printFileSystemLong() const;
         bool changeDirectory(const string& to) const;
-        vector<string> & getVector();
+        vector<shared_ptr<CFileType>> & getVector();
         void loadFiles() const;
 
     private:
-        static vector<string> m_Files;
+        static vector<shared_ptr<CFileType>> m_Vec;
 };
 
 #endif

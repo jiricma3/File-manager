@@ -9,7 +9,7 @@ class CDir : public CFileType
 {
     public:
         CDir() = default;
-        CDir(const string& name) : CFileType(name) { createFile(); }
+        CDir(const string& name) : CFileType(name) {}
         virtual bool createFile() const override;
         virtual bool copyFile(const string& to) const override;
         virtual bool copyFile(const string& from, const string& to) const override;

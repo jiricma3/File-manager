@@ -20,8 +20,10 @@ class CCommandProcess
         : m_NumOfParams(params), m_Command(command), m_Option(option) { processCommand(); }
         CCommandProcess(int params, const string& command)
         : m_NumOfParams(params), m_Command(command) { processCommand(); }
+        CCommandProcess(vector<string>& vec) : m_Vec(vec) { processCommand(); }
 
     private:
+        void getCom(int i) const;
         int getOption() const;
         void processCommand() const;
         void create() const;
@@ -33,12 +35,14 @@ class CCommandProcess
         void list() const;
         void change() const;
         void help() const;
+        void sendFileCom(const CCommand& c, int res) const;
         int m_NumOfParams = -1;
         string m_Id;
         string m_Command;
         string m_Option;
         string m_From;
         string m_To;
+        vector<string> m_Vec;
 };
 
 #endif

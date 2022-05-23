@@ -157,13 +157,13 @@ bool CDir::copyFileRegex(const string& expression, const string& to) const
 {
     CFileSystem fs;
     fs.loadFiles();
-    vector<string> vec = fs.getVector();
+    vector<shared_ptr<CFileType>> vec = fs.getVector();
     
     for(const auto& it : vec)
     {
-        if(matchRegex(expression, it))
+        if(matchRegex(expression, it->getFileName()))
         {
-            copyFile(it, to);
+            copyFile(it->getFileName(), to);
         }
     }
 
@@ -174,13 +174,13 @@ bool CDir::moveFileRegex(const string& expression, const string& to) const
 {
     CFileSystem fs;
     fs.loadFiles();
-    vector<string> vec = fs.getVector();
+    vector<shared_ptr<CFileType>> vec = fs.getVector();
 
     for(const auto& it : vec) 
     {
-        if(matchRegex(expression, it))
+        if(matchRegex(expression, it->getFileName()))
         {
-            moveFile(it, to);
+            moveFile(it->getFileName(), to);
         }
     }
 
@@ -191,13 +191,13 @@ bool CDir::deleteFileRegex(const string& expression) const
 {
     CFileSystem fs;
     fs.loadFiles();
-    vector<string> vec = fs.getVector();
+    vector<shared_ptr<CFileType>> vec = fs.getVector();
 
     for(const auto& it : vec) 
     {
-        if(matchRegex(expression, it))
+        if(matchRegex(expression, it->getFileName()))
         {
-            deleteFile(it);
+            deleteFile(it->getFileName());
         }
     }
 

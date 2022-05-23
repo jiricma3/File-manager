@@ -34,19 +34,20 @@ enum opt
 
 map<string, code> coms;
 map<string, opt> opts;
+vector<string> vec;
 
 void initCom()
 {
-    coms["create"] = CREATE;
-    coms["copy"] = COPY;
-    coms["move"] = MOVE;
-    coms["delete"] = DELETE;
-    coms["list"] = LIST;
-    coms["media"] = MEDIA;
-    coms["change"] = CHANGE;
-    coms["print"] = PRINT;
-    coms["help"] = HELP;
-    coms["end"] = END;
+    vec.push_back("create");
+    vec.push_back("copy");
+    vec.push_back("move");
+    vec.push_back("delete");
+    vec.push_back("print");
+    vec.push_back("list");
+    vec.push_back("change");
+    vec.push_back("media");
+    vec.push_back("help");
+    vec.push_back("end");
 }
 
 void initOpt()
@@ -101,170 +102,120 @@ int CCommandProcess::getOption() const
 
 void CCommandProcess::create() const
 {   
-    int res = getOption(); 
-    CCreate c = CCreate(res, m_From, m_To);
-
-    if(m_NumOfParams == 1)
-    {
-        if(res == 0 || res == 3) c.file();
-        if(res == 1 || res == 4) c.dir();
-        if(res == 2 || res == 5) c.link();
-        if(res == 7) c.help();
-        return;
-    }
-
-    if(m_Id == "l")
-    {
-        if(res == 0 || res == 3) c.file();
-        if(res == 1 || res == 4) c.dir();
-        if(res == 2 || res == 5) c.link();
-        if(res == 7) c.help();
-    }
-    else
-    {
-        c.help();
-    }
+    CCreate c = CCreate();
+    sendFileCom(c, getOption());
 }
 
 void CCommandProcess::copy() const
 {
-    int res = getOption();   
-    CCopy c = CCopy(res, m_From, m_To);
-
-    if(m_NumOfParams == 2)
-    {
-        if(res == 0 || res == 3) c.file();
-        if(res == 1 || res == 4) c.dir();
-        if(res == 2 || res == 5) c.link();
-        if(res == 7) c.help();
-    }
-    else
-    {
-        c.help();
-    }
+    
 }
 
 void CCommandProcess::move() const
 {
-    int res = getOption();   
-    CMove c = CMove(res, m_From, m_To);
-
-    if(m_NumOfParams == 2)
-    {
-        if(res == 0 || res == 3) c.file();
-        if(res == 1 || res == 4) c.dir();
-        if(res == 2 || res == 5) c.link();
-        if(res == 7) c.help();
-    }
-    else
-    {
-        c.help();
-    }
+    
 }
 
 void CCommandProcess::del() const
 {
-    int res = getOption();   
-    CDelete c = CDelete(res, m_From);
-
-    if(m_NumOfParams == 1)
-    {
-        if(res == 0 || res == 3) c.file();
-        if(res == 1 || res == 4) c.dir();
-        if(res == 2 || res == 5) c.link();
-        if(res == 7) c.help();
-    }
-    else
-    {
-        c.help();
-    }
+    
 }
 
 void CCommandProcess::print() const
 {
-    CPrint c = CPrint(m_Option);
-
-    if(m_NumOfParams == 0)
-    {
-        c.print();
-    }
+    
 }
 
 void CCommandProcess::list() const
 {
-    int res = getOption();   
-    CList c = CList(res);
-    if(res == 7) c.help();
-    c.list();
+    
 }
 
 void CCommandProcess::change() const
 {
-    CChange c = CChange(m_Option);
+    
 }
 
 void CCommandProcess::media() const
 {
-    CMedia();
+    
 }
 
 void CCommandProcess::help() const
 {
-    CHelp();
+    
+}
+
+void CCommandProcess::sendFileCom(const CCommand& c, int res) const
+{
+    if(res == 0 || res == 3) c.doCom(CFile(), m_From, m_To);
+    if(res == 1 || res == 4) c.doCom(CDir(), m_From, m_To);
+    if(res == 2 || res == 5) c.doCom(CLink(), m_From, m_To);
+    //if(res == 7) c.help();
+}
+
+void CCommandProcess::getCom(int i) const
+{
+    switch (i)
+    {
+    case 0:
+            create();
+        break;
+
+    case 1:
+            copy();
+        break;
+
+    case 2:
+            move();
+        break;
+
+    case 3:
+            del();
+        break;
+
+    case 4:
+            print();
+        break;
+
+    case 5:
+            list();
+        break;
+
+    case 6:
+            change();
+        break;
+
+    case 7:
+            media();
+        break;
+
+    case 8:
+            help();
+        break;
+
+    case 9:
+            exit(EXIT_SUCCESS);
+        break;
+    
+    default:
+            help();
+        break;
+    }
 }
 
 void CCommandProcess::processCommand() const
 {
     initCom();
+    int i = 0;
 
-    switch(coms[m_Command])
+    for(const auto& it : vec)
     {
-        case CREATE:
-                 create();
-            break;
-
-        case COPY:
-                copy();
-            break;
-                
-        case MOVE:
-                move();
-            break;
-
-        case DELETE:
-                del();
-            break;
-
-        case LIST:
-                list();
-            break;
-
-        case MEDIA:   
-                media();
-            break;
-
-        case CHANGE: 
-                change();
-            break;
-
-        case PRINT:  
-                print();
-            break;
-
-        case HELP:   
-                help();
-            break;
-
-        case END:
-                exit(EXIT_SUCCESS);
-            break;
-
-        case UNDEFINED:
-                help();
-            break;
+        if(it.compare(m_Vec[0]) == 0)
+        {
             
-        default:   
-                help();
-            break;
+        }
+
+        i++;
     }
 }

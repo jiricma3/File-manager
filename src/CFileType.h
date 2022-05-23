@@ -14,13 +14,6 @@ class CFileType
         const string & getFileName() const;
         const string setPath() const;
         const string setPath(const string& path) const;
-
-    protected:
-        CFileType(const string& name) : m_Name(name) {};
-        CFileType() = default;
-        bool matchRegex(const string& expression, const string& str) const;
-
-    private:
         virtual bool createFile() const = 0;
         virtual bool copyFile(const string& to) const = 0;
         virtual bool copyFile(const string& from, const string& to) const = 0;
@@ -32,6 +25,12 @@ class CFileType
         virtual bool moveFile(const string& from, const string& to) const = 0;
         virtual bool moveFileRegex(const string& expression, const string& to) const = 0;
 
+    protected:
+        CFileType(const string& name) : m_Name(name) {};
+        CFileType() = default;
+        bool matchRegex(const string& expression, const string& str) const;
+
+    private:
         string m_Name;
 };
 

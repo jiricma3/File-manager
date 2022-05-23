@@ -12,7 +12,7 @@
 using namespace std;
 using namespace std::filesystem;
 
-vector<string> CFileSystem::m_Files;
+vector<shared_ptr<CFileType>> CFileSystem::m_Vec;
 
 struct Properties
 {
@@ -39,32 +39,32 @@ void CFileSystem::printFileSystem() const
 
     loadFiles();
 
-    sort(m_Files.begin(), m_Files.end());
+    sort(m_Vec.begin(), m_Vec.end());
 
-    if(!m_Files.empty())
+    if(!m_Vec.empty())
     {
         cout << setfill('-') << setw(width) << "\n";
     }
 
-    for(const auto& it : m_Files)
+    for(const auto& it : m_Vec)
     {
-        if(is_directory(it))
+        if(is_directory(it->getFileName()))
         {
-            cout << ++i << ".\t" << pr.dirColor << it << pr.resetColor << endl;
+            cout << ++i << ".\t" << pr.dirColor << it->getFileName() << pr.resetColor << endl;
             cout << setfill('-') << setw(width) << "\n";
             continue;
         }
 
-        if(is_symlink(it))
+        if(is_symlink(it->getFileName()))
         {
-            cout << ++i << ".\t" << pr.linkColor << it << pr.resetColor << endl;
+            cout << ++i << ".\t" << pr.linkColor << it->getFileName() << pr.resetColor << endl;
             cout << setfill('-') << setw(width) << "\n";
             continue;
         }
 
-        if(is_regular_file(it))
+        if(is_regular_file(it->getFileName()))
         {
-            cout << ++i << ".\t" << pr.fileColor << it << pr.resetColor << endl;
+            cout << ++i << ".\t" << pr.fileColor << it->getFileName() << pr.resetColor << endl;
             cout << setfill('-') << setw(width) << "\n";
             continue;
         }
@@ -89,42 +89,42 @@ void CFileSystem::printFileSystemLong() const
 
     loadFiles();
 
-    sort(m_Files.begin(), m_Files.end());
+    sort(m_Vec.begin(), m_Vec.end());
 
     struct stat st;
 
-    if(!m_Files.empty())
+    if(!m_Vec.empty())
     {
         cout << setfill('-') << setw(width) << "\n";
     }
 
-    for(const auto& it : m_Files)
+    for(const auto& it : m_Vec)
     {
         char tim[80];
-        getFileStats(it, &st, tim);
+        getFileStats(it->getFileName(), &st, tim);
         struct passwd * pw = getpwuid(st.st_uid);
         struct group * gr = getgrgid(st.st_gid);
 
-        if(is_directory(it))
+        if(is_directory(it->getFileName()))
         {
             cout << ++i << "\t" << (pw != 0 ? pw->pw_name : "no owner") << "\t" << (gr != 0 ? gr->gr_name : "no group") <<
-            "\t" << st.st_size << "\t   " << tim << "\t\t" << pr.dirColor << it << pr.resetColor << endl;
+            "\t" << st.st_size << "\t   " << tim << "\t\t" << pr.dirColor << it->getFileName() << pr.resetColor << endl;
             cout << setfill('-') << setw(width) << "\n";
             continue;
         }
 
-        if(is_symlink(it))
+        if(is_symlink(it->getFileName()))
         {
             cout << ++i << "\t" << (pw != 0 ? pw->pw_name : "no owner") << "\t" << (gr != 0 ? gr->gr_name : "no group") <<
-            "\t" << st.st_size << "\t   " << tim << "\t\t" << pr.linkColor << it << pr.resetColor << endl;
+            "\t" << st.st_size << "\t   " << tim << "\t\t" << pr.linkColor << it->getFileName() << pr.resetColor << endl;
             cout << setfill('-') << setw(width) << "\n";
             continue;
         }
 
-        if(is_regular_file(it))
+        if(is_regular_file(it->getFileName()))
         {
             cout << ++i << "\t" << (pw != 0 ? pw->pw_name : "no owner") << "\t" << (gr != 0 ? gr->gr_name : "no group") <<
-            "\t" << st.st_size << "\t   " << tim << "\t\t" << pr.fileColor << it << pr.resetColor << endl;
+            "\t" << st.st_size << "\t   " << tim << "\t\t" << pr.fileColor << it->getFileName() << pr.resetColor << endl;
             cout << setfill('-') << setw(width) << "\n";
             continue;
         }
@@ -143,22 +143,41 @@ bool CFileSystem::changeDirectory(const string& to) const
     return true;
 }
 
-vector<string> & CFileSystem::getVector()
+vector<shared_ptr<CFileType>> & CFileSystem::getVector()
 {
-    return m_Files;
+    return m_Vec;
 }
 
 void CFileSystem::loadFiles() const
 {
     string cur = current_path();
 
-    m_Files.clear();
+    m_Vec.clear();
 
     for(const auto& it : directory_iterator(cur))
     {
        string z = it.path();
        string name = z.substr(z.find_last_of("/\\") + 1);
 
-       m_Files.emplace_back(name);
+       if(is_directory(name))
+       {
+           CDir * c = new CDir(name);
+           m_Vec.emplace_back(c);
+           continue;
+       }
+
+       if(is_symlink(name))
+       {
+           string target = read_symlink(name);
+           CLink * c = new CLink(name, target);
+           m_Vec.emplace_back(c);
+           continue;
+       }
+
+       if(is_regular_file(name))
+       {
+           CFile * c = new CFile(name);
+           m_Vec.emplace_back(c);
+       }
     }
 }

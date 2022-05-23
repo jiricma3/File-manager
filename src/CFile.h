@@ -9,7 +9,7 @@ class CFile : public CFileType
 {
     public:
         CFile() = default;
-        CFile(const string& name) : CFileType(name) { createFile(); }
+        CFile(const string& name) : CFileType(name) {}
         virtual bool createFile() const override;
         virtual bool copyFile(const string& to) const override;
         virtual bool copyFile(const string& from, const string& to) const override;
