@@ -25,196 +25,119 @@ bool fileExists(const string& path)
 bool CLink::createLink(const string& target) const 
 {
     const string cp = setPath();
-    const string tcp = setPath(target);
 
-    if(!fileExists(tcp) || linkExists(cp) || !is_regular_file(tcp))
+    if(!fileExists(target) || linkExists(cp) || !is_regular_file(target))
     {
         return false;
     }
 
-    create_directory_symlink(tcp, cp);
-
-    return true;
-}
-
-bool CLink::copyFile(const string& to) const 
-{
-    const string cp = setPath();
-    const string tcp = setPath(to);
-
-    if(!linkExists(cp) || !is_symlink(cp))
-    {
-        return false;
-    }
-
-    string tmp = tcp;
-    int num = 0;
-
-    while(linkExists(tmp))
-    {
-        tmp = tcp;
-        tmp.append("_");
-        tmp.append(to_string(++num));
-    }
-
-    copy_symlink(cp, tmp);
+    create_directory_symlink(target, cp);
 
     return true;
 }
 
 bool CLink::copyFile(const string& from, const string& to) const 
 {
-    const string fcp = setPath(from);
-    const string tcp = setPath(to);
-
-    if(!linkExists(fcp) || !is_symlink(fcp))
+    if(!linkExists(from) || !is_symlink(from))
     {
         return false;
     }
 
-    string tmp = tcp;
+    string tmp = to;
     int num = 0;
 
     while(linkExists(tmp))
     {
-        tmp = tcp;
+        tmp = to;
         tmp.append("_");
         tmp.append(to_string(++num));
     }
 
-    copy_symlink(fcp, tmp);
-
-    return true;
-}
-
-bool CLink::deleteFile() const 
-{
-    const string cp = setPath();
-
-    if(!is_symlink(cp) || !remove(cp))
-    {
-        return false;
-    }
+    copy_symlink(from, tmp);
 
     return true;
 }
 
 bool CLink::deleteFile(const string& src) const 
 {
-    const string scp = setPath(src);
-
-    if(!is_symlink(scp) || !remove(scp))
+    if(!is_symlink(src) || !remove(src))
     {
         return false;
     }
-
-    return true;
-}
-
-bool CLink::moveFile(const string& to) const 
-{
-    const string cp = setPath();
-    const string tcp = setPath(to);
-
-    if(!linkExists(cp) || !is_symlink(cp))
-    {
-        return false;
-    }
-
-    string tmp = tcp;
-    int num = 0;
-
-    while(linkExists(tmp))
-    {
-        tmp = tcp;
-        tmp.append("_");
-        tmp.append(to_string(++num));
-    }
-
-    copy_symlink(cp, tmp);
-    remove(cp);
 
     return true;
 }
 
 bool CLink::moveFile(const string& from, const string& to) const 
 {
-    const string fcp = setPath(from);
-    const string tcp = setPath(to);
-
-    if(!linkExists(fcp) || !is_symlink(fcp))
+    if(!linkExists(from) || !is_symlink(from))
     {
         return false;
     }
 
-    string tmp = tcp;
+    string tmp = to;
     int num = 0;
 
     while(linkExists(tmp))
     {
-        tmp = tcp;
+        tmp = to;
         tmp.append("_");
         tmp.append(to_string(++num));
     }
 
-    copy_symlink(fcp, tmp);
-    remove(fcp);
+    copy_symlink(from, tmp);
+    remove(from);
 
     return true;
 }
 
-bool CLink::copyFileRegex(const string& expression, const string& to) const 
-{
-    CFileSystem fs;
-    fs.loadFiles();
-    vector<shared_ptr<CFileType>> vec = fs.getVector();
+// bool CLink::copyFileRegex(const string& expression, const string& to) const 
+// {
+//     CFileSystem fs;
+//     fs.loadFiles();
+//     vector<shared_ptr<CFileType>> vec = fs.getVector();
 
-    for(const auto& it : vec) 
-    {
-        if(matchRegex(expression, it->getFileName()))
-        {
-            copyFile(it->getFileName(), to);
-        }
-    }
+//     for(const auto& it : vec) 
+//     {
+//         if(matchRegex(expression, it->getFileName()))
+//         {
+//             copyFile(it->getFileName(), to);
+//         }
+//     }
 
-    return true;
-}
+//     return true;
+// }
 
-bool CLink::moveFileRegex(const string& expression, const string& to) const 
-{
-    CFileSystem fs;
-    fs.loadFiles();
-    vector<shared_ptr<CFileType>> vec = fs.getVector();
+// bool CLink::moveFileRegex(const string& expression, const string& to) const 
+// {
+//     CFileSystem fs;
+//     fs.loadFiles();
+//     vector<shared_ptr<CFileType>> vec = fs.getVector();
 
-    for(const auto& it : vec) 
-    {
-        if(matchRegex(expression, it->getFileName()))
-        {
-            moveFile(it->getFileName(), to);
-        }
-    }
+//     for(const auto& it : vec) 
+//     {
+//         if(matchRegex(expression, it->getFileName()))
+//         {
+//             moveFile(it->getFileName(), to);
+//         }
+//     }
 
-    return true;
-}
+//     return true;
+// }
 
-bool CLink::deleteFileRegex(const string& expression) const 
-{
-    CFileSystem fs;
-    fs.loadFiles();
-    vector<shared_ptr<CFileType>> vec = fs.getVector();
+// bool CLink::deleteFileRegex(const string& expression) const 
+// {
+//     CFileSystem fs;
+//     fs.loadFiles();
+//     vector<shared_ptr<CFileType>> vec = fs.getVector();
 
-    for(const auto& it : vec) 
-    {
-        if(matchRegex(expression, it->getFileName()))
-        {
-            deleteFile(it->getFileName());
-        }
-    }
+//     for(const auto& it : vec) 
+//     {
+//         if(matchRegex(expression, it->getFileName()))
+//         {
+//             deleteFile(it->getFileName());
+//         }
+//     }
 
-    return true;
-}
-
-CFileType * CLink::cloneFile() const
-{
-    return new CLink(*this);
-}
+//     return true;
+// }

@@ -17,14 +17,16 @@ class CFileSystem
     public:
         CFileSystem() = default;
         ~CFileSystem() = default;
-        CFileSystem(const CFileSystem& x) = delete;
+        CFileSystem(const CFileSystem&) = delete;
         void printFileSystem() const;
         void printFileSystemLong() const;
-        bool changeDirectory(const string& to) const;
+        bool changeDirectory(const string&) const;
         vector<shared_ptr<CFileType>> & getVector();
         void loadFiles() const;
+        void loadFiles(const string&) const;
 
     private:
+        void loadVector(const string&) const;
         static vector<shared_ptr<CFileType>> m_Vec;
 };
 

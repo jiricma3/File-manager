@@ -1,4 +1,7 @@
 #include <map>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/stat.h>
 
 #include "CCommandProcess.h"
 
@@ -90,18 +93,15 @@ int CCommandProcess::getOption() const
             
         case L:
                 return 5;
-            
-        case LL:
-                return 6;
 
         case H:
-                return 7;
+                return 6;
         
         case UN:
-                return 7;
+                return 6;
 
         default:
-                return 7;
+                return 6;
     }
 }
 
@@ -122,72 +122,149 @@ void CCommandProcess::move() const
 
 void CCommandProcess::del() const
 {
-    sendFileCom(CDelete(), getOption());
+    sendDelCom(CDelete());
 }
 
 void CCommandProcess::print() const
 {
-    sendFsCom(CPrint(), m_Vec[1]);
+    sendFileCom(CPrint(), m_Vec[1]);
 }
 
 void CCommandProcess::list() const
 {
-    sendListCom(CList(), getOption() == 5 ? true : false);
+    sendFileCom(CList(), getOption() == 5 ? true : false);
 }
 
 void CCommandProcess::change() const
 {
-    sendFsCom(CChange(), m_Vec[1]);
+    sendFileCom(CChange(), m_Vec[1]);
 }
 
 void CCommandProcess::media() const
 {
-    sendCom(CMedia());
+    sendFileCom(CMedia());
 }
 
 void CCommandProcess::help() const
 {
-    sendCom(CHelp());
+    sendHelpCom(CHelp());
 }
 
 void CCommandProcess::sendCreateCom(const CCommand& c, int res) const
 {
-    if(res == 0 || res == 3) c.doCom(CFile(m_Vec[2]));
-    if(res == 1 || res == 4) c.doCom(CDir(m_Vec[2]));
-    if(res == 2 || res == 5) m_Vec.size() == 4 ? c.doCom(CLink(m_Vec[2], m_Vec[3])) : sendCom(CHelp());
+    if(res == 0 || res == 3) m_Vec.size() == 3 ? c.doCom(CFile(m_Vec[2])) : sendHelpCom(CHelp());
+    if(res == 1 || res == 4) m_Vec.size() == 3 ? c.doCom(CDir(m_Vec[2])) : sendHelpCom(CHelp());
+    if(res == 2 || res == 5) m_Vec.size() == 4 ? c.doCom(CLink(m_Vec[2], m_Vec[3])) : sendHelpCom(CHelp());
+    if(res < 0 || res > 5) sendHelpCom(CHelp());
+}
+
+string CCommandProcess::getFile() const
+{
+    CFileSystem fs;
+    string toFind = m_Vec[1];
+    struct stat info;
+
+    if(access(m_Vec[1].c_str(), F_OK) == 0)
+    {
+        toFind = realpath(m_Vec[1].c_str(), nullptr);
+    }
+
+    if(lstat(m_Vec[1].c_str(), &info) == 0)
+    {
+        // get absolute path to symlink todo
+    }
+
+    if(m_Vec[1].find("/") != string::npos)
+    {
+        string name = m_Vec[1];
+        string toErase = m_Vec[1].substr(m_Vec[1].find_last_of("/\\") + 1);
+        name = name.erase(name.find(toErase), toErase.length());
+        fs.loadFiles(name);
+    }
+
+    return toFind;
 }
 
 void CCommandProcess::sendFileCom(const CCommand& c, int res) const
 {
     CFileSystem fs;
-    // shared_ptr<CFileType> file;
 
-    if(res < 6)
+    if(res < 0 || m_Vec.size() != 3)
     {
-        for(const auto& it : fs.getVector())
+        sendHelpCom(CHelp());
+        return;
+    }
+
+    string toFind = getFile();
+    
+    for(const auto& it : fs.getVector())
+    {
+        if(it->getFileName().compare(toFind) == 0)
         {
-            if(it->getFileName().compare(m_Vec[1]) == 0)
-            {
-                c.doCom(*it, m_Vec[2]);
-                break;
-            }
+            c.doCom(*it, toFind, m_Vec[2]);
+            break;
         }
     }
 }
 
-void CCommandProcess::sendListCom(const CCommand& c, bool l) const
+void CCommandProcess::sendFileCom(const CCommand& c, bool l) const
 {
+    if((m_Vec.size() != 1 && l == false) || (m_Vec.size() != 2 && l == true))
+    {
+        sendHelpCom(CHelp());
+        return;
+    }
+
     c.doCom(l);
 }
 
-void CCommandProcess::sendCom(const CCommand& c) const
+void CCommandProcess::sendFileCom(const CCommand& c) const
 {
+    if(m_Vec.size() != 1)
+    {
+        sendHelpCom(CHelp());
+        return;
+    }
+
     c.doCom();
 }
 
-void CCommandProcess::sendFsCom(const CCommand& c, const string& src) const
+void CCommandProcess::sendFileCom(const CCommand& c, const string& src) const
 {
+    if(m_Vec.size() != 2)
+    {
+        sendHelpCom(CHelp());
+        return;
+    }
+
     c.doCom(src);
+}
+
+void CCommandProcess::sendDelCom(const CCommand& c) const
+{
+    CFileSystem fs;
+
+    if(m_Vec.size() != 2)
+    {
+        sendHelpCom(CHelp());
+        return;
+    }
+    
+    string toFind = getFile();
+    
+    for(const auto& it : fs.getVector())
+    {
+        if(it->getFileName().compare(toFind) == 0)
+        {
+            c.doCom(*it, toFind);
+            break;
+        }
+    }
+}
+
+void CCommandProcess::sendHelpCom(const CCommand& c) const
+{
+    c.doCom();
 }
 
 void CCommandProcess::getCom(int i) const
@@ -255,9 +332,11 @@ void CCommandProcess::processCommand() const
         if(it.compare(m_Vec[0]) == 0)
         {
             getCom(i);
-            break;
+            return;
         }
 
         i++;
     }
+
+    getCom(8);
 }

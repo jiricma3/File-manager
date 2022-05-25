@@ -6,7 +6,6 @@
 #include "CDir.h"
 #include "CLink.h"
 #include "CCommandProcess.h"
-#include "CParser.h"
 
 using namespace std;
 
@@ -46,6 +45,7 @@ int main()
 
     while(1)
     {
+        fs.loadFiles();
         getline(cin, line);
         stringstream iss(line);
 
@@ -54,7 +54,7 @@ int main()
             vec.push_back(word);
         }
 
-        CParser p = CParser(vec);
+        CCommandProcess c = CCommandProcess(vec);
         vec.clear();
     }
 

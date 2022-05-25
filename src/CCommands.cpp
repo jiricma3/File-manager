@@ -12,14 +12,14 @@ void CCreate::doCom(const CFileType& x) const
     x.createFile();
 }
 
-void CCopy::doCom(const CFileType& x, const string& to) const
+void CCopy::doCom(const CFileType& x, const string& from, const string& to) const
 {
-    x.copyFile(to);
+    x.copyFile(from, to);
 }
 
-void CMove::doCom(const CFileType& x, const string& to) const
+void CMove::doCom(const CFileType& x, const string& from, const string& to) const
 {
-    x.moveFile(to);
+    x.moveFile(from, to);
 }
 
 void CDelete::doCom(const CFileType& x, const string& from) const

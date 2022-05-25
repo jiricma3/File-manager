@@ -51,23 +51,26 @@ void CFileSystem::printFileSystem() const
 
     for(const auto& it : m_Vec)
     {
+        string file = it->getFileName();
+        string name = file.substr(file.find_last_of("/\\") + 1);
+
         if(is_directory(it->getFileName()))
         {
-            cout << ++i << ".\t" << pr.dirColor << it->getFileName() << pr.resetColor << endl;
+            cout << ++i << ".\t" << pr.dirColor << name << pr.resetColor << endl;
             cout << setfill('-') << setw(width) << "\n";
             continue;
         }
 
         if(is_symlink(it->getFileName()))
         {
-            cout << ++i << ".\t" << pr.linkColor << it->getFileName() << pr.resetColor << endl;
+            cout << ++i << ".\t" << pr.linkColor << name << pr.resetColor << endl;
             cout << setfill('-') << setw(width) << "\n";
             continue;
         }
 
         if(is_regular_file(it->getFileName()))
         {
-            cout << ++i << ".\t" << pr.fileColor << it->getFileName() << pr.resetColor << endl;
+            cout << ++i << ".\t" << pr.fileColor << name << pr.resetColor << endl;
             cout << setfill('-') << setw(width) << "\n";
             continue;
         }
@@ -111,10 +114,13 @@ void CFileSystem::printFileSystemLong() const
         struct passwd * pw = getpwuid(st.st_uid);
         struct group * gr = getgrgid(st.st_gid);
 
+        string file = it->getFileName();
+        string name = file.substr(file.find_last_of("/\\") + 1);
+
         if(is_directory(it->getFileName()))
         {
             cout << ++i << ".\t" << (pw != 0 ? pw->pw_name : "no owner") << "\t" << (gr != 0 ? gr->gr_name : "no group") <<
-            "\t" << st.st_size << "\t   " << tim << "\t\t" << pr.dirColor << it->getFileName() << pr.resetColor << endl;
+            "\t" << st.st_size << "\t   " << tim << "\t\t" << pr.dirColor << name << pr.resetColor << endl;
             cout << setfill('-') << setw(width) << "\n";
             continue;
         }
@@ -122,7 +128,7 @@ void CFileSystem::printFileSystemLong() const
         if(is_symlink(it->getFileName()))
         {
             cout << ++i << ".\t" << (pw != 0 ? pw->pw_name : "no owner") << "\t" << (gr != 0 ? gr->gr_name : "no group") <<
-            "\t" << st.st_size << "\t   " << tim << "\t\t" << pr.linkColor << it->getFileName() << pr.resetColor << endl;
+            "\t" << st.st_size << "\t   " << tim << "\t\t" << pr.linkColor << name << pr.resetColor << endl;
             cout << setfill('-') << setw(width) << "\n";
             continue;
         }
@@ -130,7 +136,7 @@ void CFileSystem::printFileSystemLong() const
         if(is_regular_file(it->getFileName()))
         {
             cout << ++i << ".\t" << (pw != 0 ? pw->pw_name : "no owner") << "\t" << (gr != 0 ? gr->gr_name : "no group") <<
-            "\t" << st.st_size << "\t   " << tim << "\t\t" << pr.fileColor << it->getFileName() << pr.resetColor << endl;
+            "\t" << st.st_size << "\t   " << tim << "\t\t" << pr.fileColor << name << pr.resetColor << endl;
             cout << setfill('-') << setw(width) << "\n";
             continue;
         }
@@ -154,36 +160,47 @@ vector<shared_ptr<CFileType>> & CFileSystem::getVector()
     return m_Vec;
 }
 
+void CFileSystem::loadFiles(const string& path) const
+{
+    loadVector(path);
+}
+
+void CFileSystem::loadVector(const string& path) const
+{
+    m_Vec.clear();
+
+    string p = realpath(path.c_str(), nullptr);
+
+    for(const auto& it : directory_iterator(p))
+    {
+        string name = it.path();
+
+        if(is_directory(name))
+        {
+            CDir * c = new CDir(name);
+            m_Vec.emplace_back(c);
+            continue;
+        }
+
+        if(is_symlink(name))
+        {
+            string target = read_symlink(name);
+            CLink * c = new CLink(name, target);
+            m_Vec.emplace_back(c);
+            continue;
+        }
+
+        if(is_regular_file(name))
+        {
+            CFile * c = new CFile(name);
+            m_Vec.emplace_back(c);
+        }
+    }
+}
+
 void CFileSystem::loadFiles() const
 {
     string cur = current_path();
 
-    m_Vec.clear();
-
-    for(const auto& it : directory_iterator(cur))
-    {
-       string z = it.path();
-       string name = z.substr(z.find_last_of("/\\") + 1);
-
-       if(is_directory(name))
-       {
-           CDir * c = new CDir(name);
-           m_Vec.emplace_back(c);
-           continue;
-       }
-
-       if(is_symlink(name))
-       {
-           string target = read_symlink(name);
-           CLink * c = new CLink(name, target);
-           m_Vec.emplace_back(c);
-           continue;
-       }
-
-       if(is_regular_file(name))
-       {
-           CFile * c = new CFile(name);
-           m_Vec.emplace_back(c);
-       }
-    }
+    loadVector(cur);
 }
