@@ -9,7 +9,7 @@ class CLink : public CFileType
 {
     public:
         CLink() = default;
-        CLink(const string& name, const string& target) : CFileType(name), m_Target(target) {}
+        CLink(const string& name, const string& target) : CFileType(name), m_Target(target) { createLink(m_Target); }
         virtual bool createFile() const override { return true; }
         bool createLink(const string& target) const;
         bool createLink(const string& target, const string& expression) const;

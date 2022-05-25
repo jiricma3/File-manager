@@ -66,7 +66,12 @@ int CCommandProcess::getOption() const
 {
     initOpt();
 
-    switch(opts[m_Option])
+    if(m_Vec.size() < 2)
+    {
+        return -1;
+    }
+
+    switch(opts[m_Vec[1]])
     {
         case RF:
                 return 0;
@@ -102,56 +107,87 @@ int CCommandProcess::getOption() const
 
 void CCommandProcess::create() const
 {   
-    CCreate c = CCreate();
-    sendFileCom(c, getOption());
+    sendCreateCom(CCreate(), getOption());
 }
 
 void CCommandProcess::copy() const
 {
-    
+    sendFileCom(CCopy(), getOption());
 }
 
 void CCommandProcess::move() const
 {
-    
+    sendFileCom(CMove(), getOption());
 }
 
 void CCommandProcess::del() const
 {
-    
+    sendFileCom(CDelete(), getOption());
 }
 
 void CCommandProcess::print() const
 {
-    
+    sendFsCom(CPrint(), m_Vec[1]);
 }
 
 void CCommandProcess::list() const
 {
-    
+    sendListCom(CList(), getOption() == 5 ? true : false);
 }
 
 void CCommandProcess::change() const
 {
-    
+    sendFsCom(CChange(), m_Vec[1]);
 }
 
 void CCommandProcess::media() const
 {
-    
+    sendCom(CMedia());
 }
 
 void CCommandProcess::help() const
 {
-    
+    sendCom(CHelp());
+}
+
+void CCommandProcess::sendCreateCom(const CCommand& c, int res) const
+{
+    if(res == 0 || res == 3) c.doCom(CFile(m_Vec[2]));
+    if(res == 1 || res == 4) c.doCom(CDir(m_Vec[2]));
+    if(res == 2 || res == 5) m_Vec.size() == 4 ? c.doCom(CLink(m_Vec[2], m_Vec[3])) : sendCom(CHelp());
 }
 
 void CCommandProcess::sendFileCom(const CCommand& c, int res) const
 {
-    if(res == 0 || res == 3) c.doCom(CFile(), m_From, m_To);
-    if(res == 1 || res == 4) c.doCom(CDir(), m_From, m_To);
-    if(res == 2 || res == 5) c.doCom(CLink(), m_From, m_To);
-    //if(res == 7) c.help();
+    CFileSystem fs;
+    // shared_ptr<CFileType> file;
+
+    if(res < 6)
+    {
+        for(const auto& it : fs.getVector())
+        {
+            if(it->getFileName().compare(m_Vec[1]) == 0)
+            {
+                c.doCom(*it, m_Vec[2]);
+                break;
+            }
+        }
+    }
+}
+
+void CCommandProcess::sendListCom(const CCommand& c, bool l) const
+{
+    c.doCom(l);
+}
+
+void CCommandProcess::sendCom(const CCommand& c) const
+{
+    c.doCom();
+}
+
+void CCommandProcess::sendFsCom(const CCommand& c, const string& src) const
+{
+    c.doCom(src);
 }
 
 void CCommandProcess::getCom(int i) const
@@ -209,11 +245,17 @@ void CCommandProcess::processCommand() const
     initCom();
     int i = 0;
 
+    if(m_Vec.empty())
+    {
+        return;
+    }
+
     for(const auto& it : vec)
     {
         if(it.compare(m_Vec[0]) == 0)
         {
-            
+            getCom(i);
+            break;
         }
 
         i++;

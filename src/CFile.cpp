@@ -37,9 +37,19 @@ bool CFile::copyFile(const string& to) const
     const string cp = setPath();
     const string tcp = setPath(to);
 
-    if((!isAccessible(cp) || isAccessible(tcp)) || !is_regular_file(cp))
+    if(!isAccessible(cp) || !is_regular_file(cp))
     {
         return false;
+    }
+
+    string tmp = tcp;
+    int num = 0;
+
+    while(isAccessible(tmp))
+    {
+        tmp = tcp;
+        tmp.append("_");
+        tmp.append(to_string(++num));
     }
 
     ifstream src(cp, ios_base::binary);

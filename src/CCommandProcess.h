@@ -35,7 +35,11 @@ class CCommandProcess
         void list() const;
         void change() const;
         void help() const;
-        void sendFileCom(const CCommand& c, int res) const;
+        void sendFileCom(const CCommand&, int) const;
+        void sendCreateCom(const CCommand&, int) const;
+        void sendListCom(const CCommand&, bool) const;
+        void sendFsCom(const CCommand&, const string&) const;
+        void sendCom(const CCommand&) const;
         int m_NumOfParams = -1;
         string m_Id;
         string m_Command;

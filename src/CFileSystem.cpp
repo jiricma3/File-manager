@@ -39,7 +39,10 @@ void CFileSystem::printFileSystem() const
 
     loadFiles();
 
-    sort(m_Vec.begin(), m_Vec.end());
+    sort(m_Vec.begin(), m_Vec.end(), [](const shared_ptr<CFileType>& l, const shared_ptr<CFileType>& r)
+    {
+        return l->getFileName() < r->getFileName();
+    });
 
     if(!m_Vec.empty())
     {
@@ -89,7 +92,10 @@ void CFileSystem::printFileSystemLong() const
 
     loadFiles();
 
-    sort(m_Vec.begin(), m_Vec.end());
+    sort(m_Vec.begin(), m_Vec.end(), [](const shared_ptr<CFileType>& l, const shared_ptr<CFileType>& r)
+    {
+        return l->getFileName() < r->getFileName();
+    });
 
     struct stat st;
 
@@ -107,7 +113,7 @@ void CFileSystem::printFileSystemLong() const
 
         if(is_directory(it->getFileName()))
         {
-            cout << ++i << "\t" << (pw != 0 ? pw->pw_name : "no owner") << "\t" << (gr != 0 ? gr->gr_name : "no group") <<
+            cout << ++i << ".\t" << (pw != 0 ? pw->pw_name : "no owner") << "\t" << (gr != 0 ? gr->gr_name : "no group") <<
             "\t" << st.st_size << "\t   " << tim << "\t\t" << pr.dirColor << it->getFileName() << pr.resetColor << endl;
             cout << setfill('-') << setw(width) << "\n";
             continue;
@@ -115,7 +121,7 @@ void CFileSystem::printFileSystemLong() const
 
         if(is_symlink(it->getFileName()))
         {
-            cout << ++i << "\t" << (pw != 0 ? pw->pw_name : "no owner") << "\t" << (gr != 0 ? gr->gr_name : "no group") <<
+            cout << ++i << ".\t" << (pw != 0 ? pw->pw_name : "no owner") << "\t" << (gr != 0 ? gr->gr_name : "no group") <<
             "\t" << st.st_size << "\t   " << tim << "\t\t" << pr.linkColor << it->getFileName() << pr.resetColor << endl;
             cout << setfill('-') << setw(width) << "\n";
             continue;
@@ -123,7 +129,7 @@ void CFileSystem::printFileSystemLong() const
 
         if(is_regular_file(it->getFileName()))
         {
-            cout << ++i << "\t" << (pw != 0 ? pw->pw_name : "no owner") << "\t" << (gr != 0 ? gr->gr_name : "no group") <<
+            cout << ++i << ".\t" << (pw != 0 ? pw->pw_name : "no owner") << "\t" << (gr != 0 ? gr->gr_name : "no group") <<
             "\t" << st.st_size << "\t   " << tim << "\t\t" << pr.fileColor << it->getFileName() << pr.resetColor << endl;
             cout << setfill('-') << setw(width) << "\n";
             continue;

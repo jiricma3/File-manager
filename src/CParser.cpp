@@ -37,28 +37,30 @@ void CParser::help()
 
 bool CParser::parseCommands()
 {
-    switch(m_Vec.size())
-    {
-        case 1:
-                one();
-            break;
+    // switch(m_Vec.size())
+    // {
+    //     case 1:
+    //             one();
+    //         break;
 
-        case 2:
-                two();
-            break;
+    //     case 2:
+    //             two();
+    //         break;
 
-        case 3:
-                three();
-            break;
+    //     case 3:
+    //             three();
+    //         break;
 
-        case 4:
-                four();
-            break;
+    //     case 4:
+    //             four();
+    //         break;
 
-        default:
-                help();
-            break;
-    }
+    //     default:
+    //             help();
+    //         break;
+    // }
+
+    CCommandProcess c = CCommandProcess(m_Vec);
 
     return true;
 }
