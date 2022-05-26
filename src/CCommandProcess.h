@@ -29,13 +29,14 @@ class CCommandProcess
         void help() const;
         void end() const;
         void sendFileCom(const CCommand&, int) const;
-        void sendDelCom(const CCommand&) const;
+        void sendDelCom(const CCommand&, int) const;
         void sendHelpCom(const CCommand&) const;
         void sendCreateCom(const CCommand&, int) const;
         void sendFileCom(const CCommand&, bool) const;
         void sendFileCom(const CCommand&, const string&) const;
         void sendFileCom(const CCommand&) const;
-        string getFile() const;
+        bool matchRegex(const string&, const string&) const;
+        string getFile(const string&) const;
         vector<string> m_Vec;
 };
 

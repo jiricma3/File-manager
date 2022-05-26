@@ -25,14 +25,10 @@ enum code
 enum opt
 {
     UN,
-    RF,
-    RD,
-    RL,
+    R,
     F,
     D,
-    L,
-    LL,
-    H
+    L
 };
 
 map<string, code> coms;
@@ -55,14 +51,10 @@ void initCom()
 
 void initOpt()
 {
-    opts["-rf"] = RF;
-    opts["-rd"] = RD;
-    opts["-rl"] = RL;
+    opts["-r"] = R;
     opts["-f"] = F;
     opts["-d"] = D;
     opts["-l"] = L;
-    opts["-ll"] = LL;
-    opts["-h"] = H;
 }
 
 int CCommandProcess::getOption() const
@@ -76,33 +68,37 @@ int CCommandProcess::getOption() const
 
     switch(opts[m_Vec[1]])
     {
-        case RF:
-                return 0;
-            
-        case RD:
+        case R:
                 return 1;
             
-        case RL:
+        case F:
                 return 2;
             
-        case F:
+        case D:
                 return 3;
             
-        case D:
-                return 4;
-            
         case L:
-                return 5;
-
-        case H:
-                return 6;
+                return 4;
         
         case UN:
-                return 6;
+                return 5;
 
         default:
-                return 6;
+                return 5;
     }
+}
+
+bool CCommandProcess::matchRegex(const string& expression, const string& str) const
+{
+    regex reg (expression);
+    smatch match;
+
+    if(regex_search(str, match, reg))
+    {
+        return true;
+    }
+
+    return false;
 }
 
 void CCommandProcess::create() const
@@ -122,7 +118,7 @@ void CCommandProcess::move() const
 
 void CCommandProcess::del() const
 {
-    sendDelCom(CDelete());
+    sendDelCom(CDelete(), getOption());
 }
 
 void CCommandProcess::print() const
@@ -132,7 +128,7 @@ void CCommandProcess::print() const
 
 void CCommandProcess::list() const
 {
-    sendFileCom(CList(), getOption() == 5 ? true : false);
+    sendFileCom(CList(), getOption() == 4 ? true : false);
 }
 
 void CCommandProcess::change() const
@@ -157,60 +153,94 @@ void CCommandProcess::end() const
 
 void CCommandProcess::sendCreateCom(const CCommand& c, int res) const
 {
-    if(res == 0 || res == 3) m_Vec.size() == 3 ? c.doCom(CFile(m_Vec[2])) : sendHelpCom(CHelp());
-    if(res == 1 || res == 4) m_Vec.size() == 3 ? c.doCom(CDir(m_Vec[2])) : sendHelpCom(CHelp());
-    if(res == 2 || res == 5) m_Vec.size() == 4 ? c.doCom(CLink(m_Vec[2], m_Vec[3])) : sendHelpCom(CHelp());
-    if(res < 0 || res > 5) sendHelpCom(CHelp());
+    if(res == 2) m_Vec.size() == 3 ? c.doCom(CFile(m_Vec[2])) : sendHelpCom(CHelp());
+    if(res == 3) m_Vec.size() == 3 ? c.doCom(CDir(m_Vec[2])) : sendHelpCom(CHelp());
+    if(res == 4) m_Vec.size() == 4 ? c.doCom(CLink(m_Vec[2], m_Vec[3])) : sendHelpCom(CHelp());
+    if(res < 0 || res > 4) sendHelpCom(CHelp());
 }
 
-string CCommandProcess::getFile() const
+string CCommandProcess::getFile(const string& file) const
 {
     CFileSystem fs;
-    char * toFind;
+    char * toFind = nullptr;
     struct stat info;
 
-    if(access(m_Vec[1].c_str(), F_OK) == 0)
+    if(access(file.c_str(), F_OK) == 0)
     {
-        toFind = realpath(m_Vec[1].c_str(), nullptr);
+        toFind = realpath(file.c_str(), nullptr);
     }
 
-    if(lstat(m_Vec[1].c_str(), &info) == 0)
+    if(lstat(file.c_str(), &info) == 0)
     {
         // get absolute path to symlink todo
     }
 
-    if(m_Vec[1].find("/") != string::npos)
+    if(file.find("/") != string::npos)
     {
-        string name = m_Vec[1];
-        string toErase = m_Vec[1].substr(m_Vec[1].find_last_of("/\\") + 1);
-        name = name.erase(name.find(toErase), toErase.length());
+        string name = file;
+        auto toErasePos = file.find_last_of("/\\");
+        string toErase = file.substr(toErasePos + 1);
+        auto pos = name.find(toErase, toErasePos);
+        auto len = toErase.length();
+        name = name.erase(pos, len);
         fs.loadFiles(name);
     }
 
-    string tmp = toFind;
-    free(toFind);
+    if(toFind != nullptr)
+    {
+        string tmp = toFind;
+        free(toFind);
+        return tmp;
+    }
 
-    return tmp;
+    return "";
 }
 
 void CCommandProcess::sendFileCom(const CCommand& c, int res) const
 {
     CFileSystem fs;
+    bool reg;
 
-    if(res < 0 || m_Vec.size() != 3)
+    if(res == -1 || (res == 1 && m_Vec.size() != 4) || (res == 5 && m_Vec.size() != 3))
     {
         sendHelpCom(CHelp());
         return;
     }
 
-    string toFind = getFile();
-    
-    for(const auto& it : fs.getVector())
+    if(res == 1)
     {
-        if(it->getFileName().compare(toFind) == 0)
+        reg = true;
+    }
+    else
+    {
+        reg = false;
+    }
+
+    if(reg)
+    {
+        auto vec = fs.getVector();
+
+        for(const auto& it : vec) 
         {
-            c.doCom(*it, toFind, m_Vec[2]);
-            break;
+            string toFind = getFile(it->getFileName());
+
+            if(matchRegex(m_Vec[2], toFind))
+            {
+                c.doCom(*it, toFind, m_Vec[3]);
+            }
+        }
+    }
+    else
+    {
+        string toFind = getFile(m_Vec[1]);
+
+        for(const auto& it : fs.getVector())
+        {
+            if(it->getFileName().compare(toFind) == 0)
+            {
+                c.doCom(*it, toFind, m_Vec[2]);
+                break;
+            }
         }
     }
 }
@@ -248,24 +278,49 @@ void CCommandProcess::sendFileCom(const CCommand& c, const string& src) const
     c.doCom(src);
 }
 
-void CCommandProcess::sendDelCom(const CCommand& c) const
+void CCommandProcess::sendDelCom(const CCommand& c, int res) const
 {
     CFileSystem fs;
+    bool reg;
 
-    if(m_Vec.size() != 2)
+    if(res == -1 || (res == 1 && m_Vec.size() != 3) || (res == 5 && m_Vec.size() != 2))
     {
         sendHelpCom(CHelp());
         return;
     }
-    
-    string toFind = getFile();
-    
-    for(const auto& it : fs.getVector())
+
+    if(res == 1)
     {
-        if(it->getFileName().compare(toFind) == 0)
+        reg = true;
+    }
+    else
+    {
+        reg = false;
+    }
+
+    if(reg)
+    {
+        for(const auto& it : fs.getVector()) 
         {
-            c.doCom(*it, toFind);
-            break;
+            string toFind = getFile(it->getFileName());
+
+            if(matchRegex(m_Vec[2], toFind))
+            {
+                c.doCom(*it, toFind);
+            }
+        }
+    }
+    else
+    {
+        string toFind = getFile(m_Vec[1]);
+
+        for(const auto& it : fs.getVector())
+        {
+            if(it->getFileName().compare(toFind) == 0)
+            {
+                c.doCom(*it, toFind);
+                break;
+            }
         }
     }
 }

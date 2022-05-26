@@ -17,17 +17,3 @@ const string CFileType::setPath() const
     cp.append("/" + m_Name);
     return cp;
 }
-
-bool CFileType::matchRegex(const string& expression, const string& str) const
-{
-    regex reg (expression);
-    smatch match;
-
-    if(regex_search(str, match, reg))
-    {
-        return true;
-    }
-
-    return false;
-}
-

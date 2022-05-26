@@ -63,7 +63,7 @@ int main()
         {
             CCommandProcess c = CCommandProcess(vec);
         }
-        catch(const std::exception& e)
+        catch(const runtime_error& e)
         {
             return EXIT_SUCCESS;
         }
