@@ -27,6 +27,7 @@ class CCommandProcess
         void list() const;
         void change() const;
         void help() const;
+        void end() const;
         void sendFileCom(const CCommand&, int) const;
         void sendDelCom(const CCommand&) const;
         void sendHelpCom(const CCommand&) const;

@@ -150,6 +150,11 @@ void CCommandProcess::help() const
     sendHelpCom(CHelp());
 }
 
+void CCommandProcess::end() const
+{
+    throw runtime_error("exit");
+}
+
 void CCommandProcess::sendCreateCom(const CCommand& c, int res) const
 {
     if(res == 0 || res == 3) m_Vec.size() == 3 ? c.doCom(CFile(m_Vec[2])) : sendHelpCom(CHelp());
@@ -161,7 +166,7 @@ void CCommandProcess::sendCreateCom(const CCommand& c, int res) const
 string CCommandProcess::getFile() const
 {
     CFileSystem fs;
-    string toFind = m_Vec[1];
+    char * toFind;
     struct stat info;
 
     if(access(m_Vec[1].c_str(), F_OK) == 0)
@@ -182,7 +187,10 @@ string CCommandProcess::getFile() const
         fs.loadFiles(name);
     }
 
-    return toFind;
+    string tmp = toFind;
+    free(toFind);
+
+    return tmp;
 }
 
 void CCommandProcess::sendFileCom(const CCommand& c, int res) const
@@ -308,7 +316,7 @@ void CCommandProcess::getCom(int i) const
         break;
 
     case 9:
-            exit(EXIT_SUCCESS);
+            end();
         break;
     
     default:

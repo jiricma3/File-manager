@@ -22,6 +22,21 @@ bool fileExists(const string& path)
     return stat(path.c_str(), &info) == 0;
 }
 
+const string CLink::setName(const string& name) const
+{
+    string tmp = name;
+    int num = 0;
+
+    while(linkExists(tmp))
+    {
+        tmp = name;
+        tmp.append("_");
+        tmp.append(to_string(++num));
+    }
+
+    return tmp;
+}
+
 bool CLink::createLink(const string& target) const 
 {
     const string cp = setPath();
@@ -43,15 +58,7 @@ bool CLink::copyFile(const string& from, const string& to) const
         return false;
     }
 
-    string tmp = to;
-    int num = 0;
-
-    while(linkExists(tmp))
-    {
-        tmp = to;
-        tmp.append("_");
-        tmp.append(to_string(++num));
-    }
+    string tmp = setName(to);
 
     copy_symlink(from, tmp);
 
@@ -75,15 +82,7 @@ bool CLink::moveFile(const string& from, const string& to) const
         return false;
     }
 
-    string tmp = to;
-    int num = 0;
-
-    while(linkExists(tmp))
-    {
-        tmp = to;
-        tmp.append("_");
-        tmp.append(to_string(++num));
-    }
+    string tmp = setName(to);
 
     copy_symlink(from, tmp);
     remove(from);

@@ -14,6 +14,21 @@ bool isAccessible(const string& name)
     return (access(name.c_str(), F_OK) == 0);
 }
 
+const string CFile::setName(const string& name) const
+{
+    string tmp = name;
+    int num = 0;
+
+    while(isAccessible(tmp))
+    {
+        tmp = name;
+        tmp.append("_");
+        tmp.append(to_string(++num));
+    }
+
+    return tmp;
+}
+
 bool CFile::createFile() const 
 {
     const string cp = setPath();
@@ -39,15 +54,7 @@ bool CFile::copyFile(const string& from, const string& to) const
         return false;
     }
 
-    string tmp = to;
-    int num = 0;
-
-    while(isAccessible(tmp))
-    {
-        tmp = to;
-        tmp.append("_");
-        tmp.append(to_string(++num));
-    }
+    string tmp = setName(to);
 
     ifstream src(from, ios_base::binary);
 
@@ -80,15 +87,7 @@ bool CFile::moveFile(const string& from, const string& to) const
         return false;
     }
 
-    string tmp = to;
-    int num = 0;
-
-    while(isAccessible(tmp))
-    {
-        tmp = to;
-        tmp.append("_");
-        tmp.append(to_string(++num));
-    }
+    string tmp = setName(to);
 
     rename(from.c_str(), tmp.c_str());
 

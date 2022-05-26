@@ -49,12 +49,26 @@ int main()
         getline(cin, line);
         stringstream iss(line);
 
-        while ( iss >> word) 
-        {    
+        while (iss >> word) 
+        {   
+            transform(word.begin(), word.end(), word.begin(), [](unsigned char c)
+            {
+                return tolower(c);
+            });
+
             vec.push_back(word);
         }
 
-        CCommandProcess c = CCommandProcess(vec);
+        try
+        {
+            CCommandProcess c = CCommandProcess(vec);
+        }
+        catch(const std::exception& e)
+        {
+            return EXIT_SUCCESS;
+        }
+        
+        
         vec.clear();
     }
 

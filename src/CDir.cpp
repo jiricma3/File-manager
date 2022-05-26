@@ -14,6 +14,21 @@ bool dirExists(const string& path)
     return stat(path.c_str(), &info) == 0;
 }
 
+const string CDir::setName(const string& name) const
+{
+    string tmp = name;
+    int num = 0;
+
+    while(dirExists(tmp))
+    {
+        tmp = name;
+        tmp.append("_");
+        tmp.append(to_string(++num));
+    }
+
+    return tmp;
+}
+
 bool CDir::createFile() const 
 {
     const string cp = setPath();
@@ -33,15 +48,7 @@ bool CDir::copyFile(const string& from, const string& to) const
         return false;
     }
 
-    string tmp = to;
-    int num = 0;
-
-    while(dirExists(tmp))
-    {
-        tmp = to;
-        tmp.append("_");
-        tmp.append(to_string(++num));
-    }
+    string tmp = setName(to);
 
     copy(from, tmp);
 
@@ -65,15 +72,7 @@ bool CDir::moveFile(const string& from, const string& to) const
         return false;
     }
 
-    string tmp = to;
-    int num = 0;
-
-    while(dirExists(tmp))
-    {
-        tmp = to;
-        tmp.append("_");
-        tmp.append(to_string(++num));
-    }
+    string tmp = setName(to);
 
     copy(from, tmp);
     remove(from);

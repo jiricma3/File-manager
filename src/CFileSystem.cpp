@@ -140,7 +140,12 @@ void CFileSystem::printFileSystemLong() const
             cout << setfill('-') << setw(width) << "\n";
             continue;
         }
+
+        free(pw);
+        free(gr);
     }
+
+    
 }
 
 bool CFileSystem::changeDirectory(const string& to) const
@@ -169,7 +174,7 @@ void CFileSystem::loadVector(const string& path) const
 {
     m_Vec.clear();
 
-    string p = realpath(path.c_str(), nullptr);
+    char * p = realpath(path.c_str(), nullptr);
 
     for(const auto& it : directory_iterator(p))
     {
@@ -196,6 +201,8 @@ void CFileSystem::loadVector(const string& path) const
             m_Vec.emplace_back(c);
         }
     }
+
+    free(p);
 }
 
 void CFileSystem::loadFiles() const
