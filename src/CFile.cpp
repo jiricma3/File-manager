@@ -9,6 +9,8 @@
 using namespace std;
 using namespace std::filesystem;
 
+ExTxt extxtf;
+
 bool isAccessible(const string& name)
 {
     return (access(name.c_str(), F_OK) == 0);
@@ -29,13 +31,13 @@ const string CFile::setName(const string& name) const
     return tmp;
 }
 
-bool CFile::createFile() const 
+void CFile::createFile() const 
 {
     const string cp = setPath();
 
     if(isAccessible(cp))
     {
-        return false;
+        throw CExeption(extxtf.AlreadyExists);
     }
 
     ofstream stream (cp, ios_base::out);
@@ -43,15 +45,15 @@ bool CFile::createFile() const
     stream.write("", 0);
 
     stream.close();
-
-    return true;
 }
 
-bool CFile::copyFile(const string& from, const string& to) const 
+void CFile::copyFile(const string& to) const 
 {
-    if(!isAccessible(from) || !is_regular_file(from))
+    string from = getFileName();
+
+    if(!isAccessible(from))
     {
-        return false;
+        throw CExeption(extxtf.IsNotAccessible);
     }
 
     string tmp = setName(to);
@@ -64,32 +66,30 @@ bool CFile::copyFile(const string& from, const string& to) const
 
     src.close();
     dst.close();
-
-    return true;
 }
 
-bool CFile::deleteFile(const string& src) const 
+void CFile::deleteFile() const 
 {
-    if(!isAccessible(src) || !is_regular_file(src))
+    string src = getFileName();
+
+    if(!isAccessible(src))
     {
-        return false;
+        throw CExeption(extxtf.IsNotAccessible);
     }
 
     remove(src.c_str());
-
-    return true;
 }
 
-bool CFile::moveFile(const string& from, const string& to) const 
+void CFile::moveFile(const string& to) const 
 {
-    if(!isAccessible(from) || !is_regular_file(from))
+    string from = getFileName();
+
+    if(!isAccessible(from))
     {
-        return false;
+        throw CExeption(extxtf.IsNotAccessible);
     }
 
     string tmp = setName(to);
 
     rename(from.c_str(), tmp.c_str());
-
-    return true;
 }

@@ -8,6 +8,8 @@
 using namespace std;
 using namespace std::filesystem;
 
+ExTxt extxtl;
+
 bool linkExists(const string& path)
 {
     struct stat info;
@@ -37,55 +39,53 @@ const string CLink::setName(const string& name) const
     return tmp;
 }
 
-bool CLink::createLink(const string& target) const 
+void CLink::createLink(const string& target) const 
 {
     const string cp = setPath();
 
-    if(!fileExists(target) || linkExists(cp) || !is_regular_file(target))
+    if(!fileExists(target) || linkExists(cp))
     {
-        return false;
+        throw CExeption(extxtl.CouldNotCreateLink);
     }
 
-    create_directory_symlink(target, cp);
-
-    return true;
+    create_symlink(target, cp);
 }
 
-bool CLink::copyFile(const string& from, const string& to) const 
+void CLink::copyFile(const string& to) const 
 {
-    if(!linkExists(from) || !is_symlink(from))
+    string from = getFileName();
+
+    if(!linkExists(from))
     {
-        return false;
+        throw CExeption(extxtl.IsNotAccessible);
     }
 
     string tmp = setName(to);
 
     copy_symlink(from, tmp);
-
-    return true;
 }
 
-bool CLink::deleteFile(const string& src) const 
+void CLink::deleteFile() const 
 {
-    if(!is_symlink(src) || !remove(src))
+    string src = getFileName();
+
+    if(!remove(src))
     {
-        return false;
+        throw CExeption(extxtl.IsNotAccessible);
     }
-
-    return true;
 }
 
-bool CLink::moveFile(const string& from, const string& to) const 
+void CLink::moveFile(const string& to) const 
 {
-    if(!linkExists(from) || !is_symlink(from))
+    string from = getFileName();
+
+    if(!linkExists(from))
     {
-        return false;
+        throw CExeption(extxtl.IsNotAccessible);
     }
 
     string tmp = setName(to);
 
     copy_symlink(from, tmp);
     remove(from);
-
-    return true;
 }

@@ -174,7 +174,7 @@ void CFileSystem::loadVector(const string& path) const
 {
     m_Vec.clear();
 
-    char * p = realpath(path.c_str(), nullptr);
+    string p = absolute(path);
 
     for(const auto& it : directory_iterator(p))
     {
@@ -201,8 +201,6 @@ void CFileSystem::loadVector(const string& path) const
             m_Vec.emplace_back(c);
         }
     }
-
-    free(p);
 }
 
 void CFileSystem::loadFiles() const

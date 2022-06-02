@@ -11,11 +11,11 @@ class CLink : public CFileType
         CLink() = default;
         CLink(const string& name, const string& target) : CFileType(name), m_Target(target) {}
         virtual const string setName(const string&) const override;
-        virtual bool createFile() const override { return createLink(m_Target) == true ? true : false; }
-        bool createLink(const string&) const;
-        virtual bool copyFile(const string&, const string&) const override;
-        virtual bool deleteFile(const string&) const override;
-        virtual bool moveFile(const string&, const string&) const override;
+        virtual void createFile() const override { createLink(m_Target); }
+        void createLink(const string&) const;
+        virtual void copyFile(const string&) const override;
+        virtual void deleteFile() const override;
+        virtual void moveFile(const string&) const override;
 
     private:
         string m_Target;

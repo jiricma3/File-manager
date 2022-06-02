@@ -1,10 +1,7 @@
 #include <iostream>
 #include <sstream>
 
-#include "CFile.h"
-#include "CFileSystem.h"
-#include "CDir.h"
-#include "CLink.h"
+#include "CFileType.h"
 #include "CCommandProcess.h"
 
 using namespace std;
@@ -42,32 +39,41 @@ int main()
     // CCommandProcess("end");
     string word, line;
     vector<string> vec;
+    CCommandProcess c;
 
     while(1)
     {
         fs.loadFiles();
         getline(cin, line);
         stringstream iss(line);
+        int cnt = 0;
 
         while (iss >> word) 
         {   
-            transform(word.begin(), word.end(), word.begin(), [](unsigned char c)
+            if(cnt == 0)
             {
-                return tolower(c);
-            });
+                transform(word.begin(), word.end(), word.begin(), [](unsigned char c)
+                {
+                    return tolower(c);
+                });
+            }
 
             vec.push_back(word);
+            cnt++;
         }
 
         try
         {
-            CCommandProcess c = CCommandProcess(vec);
+            c.passCommand(vec);
         }
         catch(const runtime_error& e)
         {
             return EXIT_SUCCESS;
         }
-        
+        catch(const CExeption& e)
+        {
+            cout << e.what() << endl;
+        }
         
         vec.clear();
     }

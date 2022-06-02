@@ -4,8 +4,11 @@
 #include <sys/stat.h>
 
 #include "CCommandProcess.h"
+#include "CExeption.h"
 
 using namespace std;
+
+ExTxt extxt;
 
 enum code
 {
@@ -19,7 +22,8 @@ enum code
     CHANGE,
     PRINT,
     HELP,
-    END
+    END,
+    CURRENT
 };
 
 enum opt
@@ -31,7 +35,6 @@ enum opt
     L
 };
 
-map<string, code> coms;
 map<string, opt> opts;
 vector<string> vec;
 
@@ -47,6 +50,8 @@ void initCom()
     vec.push_back("media");
     vec.push_back("help");
     vec.push_back("end");
+    vec.push_back("current");
+    vec.push_back("write");
 }
 
 void initOpt()
@@ -151,6 +156,16 @@ void CCommandProcess::end() const
     throw runtime_error("exit");
 }
 
+void CCommandProcess::current() const
+{
+    sendHelpCom(CCurrent());
+}
+
+void CCommandProcess::write() const
+{
+    sendWriteCom(CWrite(), m_Vec[1], m_Vec[2]);
+}
+
 void CCommandProcess::sendCreateCom(const CCommand& c, int res) const
 {
     if(res == 2) m_Vec.size() == 3 ? c.doCom(CFile(m_Vec[2])) : sendHelpCom(CHelp());
@@ -159,23 +174,12 @@ void CCommandProcess::sendCreateCom(const CCommand& c, int res) const
     if(res < 0 || res > 4) sendHelpCom(CHelp());
 }
 
-string CCommandProcess::getFile(const string& file) const
+string CCommandProcess::getFile(const string& file, int cnt) const
 {
     CFileSystem fs;
-    char * toFind = nullptr;
-    struct stat info;
+    string path = absolute(file);
 
-    if(access(file.c_str(), F_OK) == 0)
-    {
-        toFind = realpath(file.c_str(), nullptr);
-    }
-
-    if(lstat(file.c_str(), &info) == 0)
-    {
-        // get absolute path to symlink todo
-    }
-
-    if(file.find("/") != string::npos)
+    if(file.find("/") != string::npos && cnt == 0)
     {
         string name = file;
         auto toErasePos = file.find_last_of("/\\");
@@ -186,20 +190,14 @@ string CCommandProcess::getFile(const string& file) const
         fs.loadFiles(name);
     }
 
-    if(toFind != nullptr)
-    {
-        string tmp = toFind;
-        free(toFind);
-        return tmp;
-    }
-
-    return "";
+    return path;
 }
 
 void CCommandProcess::sendFileCom(const CCommand& c, int res) const
 {
     CFileSystem fs;
     bool reg;
+    bool found = false;
 
     if(res == -1 || (res == 1 && m_Vec.size() != 4) || (res == 5 && m_Vec.size() != 3))
     {
@@ -218,30 +216,37 @@ void CCommandProcess::sendFileCom(const CCommand& c, int res) const
 
     if(reg)
     {
-        auto vec = fs.getVector();
+        int i = 0;
 
-        for(const auto& it : vec) 
+        for(const auto& it : fs.getVector()) 
         {
-            string toFind = getFile(it->getFileName());
+            string toFind = getFile(it->getFileName(), i++);
 
             if(matchRegex(m_Vec[2], toFind))
             {
-                c.doCom(*it, toFind, m_Vec[3]);
+                c.doCom(*it, m_Vec[3]);
+                found = true;
             }
         }
     }
     else
     {
-        string toFind = getFile(m_Vec[1]);
+        string toFind = getFile(m_Vec[1], 0);
 
         for(const auto& it : fs.getVector())
         {
             if(it->getFileName().compare(toFind) == 0)
             {
-                c.doCom(*it, toFind, m_Vec[2]);
+                c.doCom(*it, m_Vec[2]);
+                found = true;
                 break;
             }
         }
+    }
+
+    if(!found)
+    {
+        throw CExeption(extxt.DoesntExist);
     }
 }
 
@@ -282,6 +287,7 @@ void CCommandProcess::sendDelCom(const CCommand& c, int res) const
 {
     CFileSystem fs;
     bool reg;
+    bool found = false;
 
     if(res == -1 || (res == 1 && m_Vec.size() != 3) || (res == 5 && m_Vec.size() != 2))
     {
@@ -300,34 +306,54 @@ void CCommandProcess::sendDelCom(const CCommand& c, int res) const
 
     if(reg)
     {
+        int i = 0;
+
         for(const auto& it : fs.getVector()) 
         {
-            string toFind = getFile(it->getFileName());
+            string toFind = getFile(it->getFileName(), i++);
 
             if(matchRegex(m_Vec[2], toFind))
             {
-                c.doCom(*it, toFind);
+                c.doCom(*it);
+                found = true;
             }
         }
     }
     else
     {
-        string toFind = getFile(m_Vec[1]);
+        string toFind = getFile(m_Vec[1], 0);
 
         for(const auto& it : fs.getVector())
         {
             if(it->getFileName().compare(toFind) == 0)
             {
-                c.doCom(*it, toFind);
+                c.doCom(*it);
+                found = true;
                 break;
             }
         }
+    }
+
+    if(!found)
+    {
+        throw CExeption(extxt.DoesntExist);
     }
 }
 
 void CCommandProcess::sendHelpCom(const CCommand& c) const
 {
     c.doCom();
+}
+
+void CCommandProcess::sendWriteCom(const CCommand& c, const string& path, const string& content) const
+{
+    if(m_Vec.size() != 3)
+    {
+        sendHelpCom(CHelp());
+        return;
+    }
+    
+    c.doCom(path, content);
 }
 
 void CCommandProcess::getCom(int i) const
@@ -372,6 +398,14 @@ void CCommandProcess::getCom(int i) const
 
     case 9:
             end();
+        break;
+
+    case 10:
+            current();
+        break;
+
+    case 11:
+            write();
         break;
     
     default:

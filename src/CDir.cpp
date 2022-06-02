@@ -7,6 +7,8 @@
 using namespace std;
 using namespace std::filesystem;
 
+ExTxt extxtd;
+
 bool dirExists(const string& path)
 {
     struct stat info;
@@ -29,53 +31,53 @@ const string CDir::setName(const string& name) const
     return tmp;
 }
 
-bool CDir::createFile() const 
+void CDir::createFile() const 
 {
     const string cp = setPath();
 
     if(!create_directory(cp))
     {
-        return false;
+        throw CExeption(extxtd.AlreadyExists);
     }
-
-    return true;
 }
 
-bool CDir::copyFile(const string& from, const string& to) const 
+void CDir::copyFile(const string& to) const 
 {
-    if(!dirExists(from) || !is_directory(from))
+    string from = getFileName();
+
+    if(!dirExists(from))
     {
-        return false;
+        throw CExeption(extxtd.IsNotAccessible);
     }
 
     string tmp = setName(to);
 
     copy(from, tmp);
-
-    return true;
 }
 
-bool CDir::deleteFile(const string& src) const 
+void CDir::deleteFile() const 
 {
-    if(!is_directory(src) || !remove(src))
+    string src = getFileName();
+
+    if(!dirExists(src))
     {
-        return false;
+        throw CExeption(extxtd.IsNotAccessible);
     }
 
-    return true;
+    remove_all(src);
 }
 
-bool CDir::moveFile(const string& from, const string& to) const 
+void CDir::moveFile(const string& to) const 
 {
-    if(!dirExists(from) || !is_directory(from))
+    string from = getFileName();
+
+    if(!dirExists(from))
     {
-        return false;
+        throw CExeption(extxtd.IsNotAccessible);
     }
 
     string tmp = setName(to);
 
     copy(from, tmp);
-    remove(from);
-
-    return true;
+    remove_all(from);
 }

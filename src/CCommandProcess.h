@@ -12,10 +12,12 @@ using namespace std::filesystem;
 class CCommandProcess
 {
     public:
-        CCommandProcess(vector<string>& vec) : m_Vec(vec) { processCommand(); }
+        CCommandProcess() = default;
+        ~CCommandProcess() = default;
+        void passCommand(vector<string>& vec) { m_Vec = vec; processCommand(); }
 
     private:
-        void getCom(int i) const;
+        void getCom(int) const;
         int getOption() const;
         void processCommand() const;
         void create() const;
@@ -28,6 +30,8 @@ class CCommandProcess
         void change() const;
         void help() const;
         void end() const;
+        void current() const;
+        void write() const;
         void sendFileCom(const CCommand&, int) const;
         void sendDelCom(const CCommand&, int) const;
         void sendHelpCom(const CCommand&) const;
@@ -35,8 +39,9 @@ class CCommandProcess
         void sendFileCom(const CCommand&, bool) const;
         void sendFileCom(const CCommand&, const string&) const;
         void sendFileCom(const CCommand&) const;
+        void sendWriteCom(const CCommand&, const string&, const string&) const;
         bool matchRegex(const string&, const string&) const;
-        string getFile(const string&) const;
+        string getFile(const string&, int) const;
         vector<string> m_Vec;
 };
 
