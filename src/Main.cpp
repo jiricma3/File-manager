@@ -1,7 +1,6 @@
 #include <iostream>
 #include <sstream>
 
-#include "CFileType.h"
 #include "CCommandProcess.h"
 
 using namespace std;

@@ -1,7 +1,6 @@
 #include <filesystem>
 #include <sys/stat.h>
 
-#include "CDir.h"
 #include "CFileSystem.h"
 
 using namespace std;

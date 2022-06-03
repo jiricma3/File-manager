@@ -1,11 +1,9 @@
 #ifndef __CFILESYSTEM_H__
 #define __CFILESYSTEM_H__
 
-#include <string>
 #include <vector>
 #include <memory>
 
-#include "CFileType.h"
 #include "CFile.h"
 #include "CDir.h"
 #include "CLink.h"

@@ -4,7 +4,6 @@
 #include <sys/stat.h>
 
 #include "CCommandProcess.h"
-#include "CExeption.h"
 
 using namespace std;
 

@@ -1,9 +1,7 @@
 #ifndef __CCOMMANDS_H__
 #define __CCOMMANDS_H__
 
-#include "CFileType.h"
 #include "CFileSystem.h"
-#include "CExeption.h"
 
 using namespace std;
 

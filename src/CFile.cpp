@@ -1,9 +1,7 @@
 #include <fstream>
 #include <unistd.h>
 #include <filesystem>
-#include <regex>
 
-#include "CFile.h"
 #include "CFileSystem.h"
 
 using namespace std;

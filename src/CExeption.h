@@ -2,7 +2,6 @@
 #define __CEXEPTION_H__
 
 #include <exception>
-#include <string>
 
 using namespace std;
 

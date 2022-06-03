@@ -1,5 +1,4 @@
 #include <filesystem>
-#include <regex>
 
 #include "CFileType.h"
 

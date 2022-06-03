@@ -1,7 +1,6 @@
 #ifndef __CFILETYPE_H__
 #define __CFILETYPE_H__
 
-#include <string>
 #include <regex>
 
 #include "CExeption.h"
@@ -22,7 +21,6 @@ class CFileType
 
     protected:
         CFileType(const string& name) : m_Name(name) {};
-        CFileType() = default;
 
     private:
         string m_Name;
