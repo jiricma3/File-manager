@@ -1,8 +1,6 @@
 # Správce souborů
-===============
 
 ## Zadání z Progtestu
-------------------
 
 Program na správu souborů/adresářů (inspirace Midnight Commander).
 
@@ -17,7 +15,6 @@ Program na správu souborů/adresářů (inspirace Midnight Commander).
 
 
 ## Upřesnění zadání
-----------------
 
 Pracujeme se třemi druhy souborů. S klasickým souborem, adresářem a symbolickým linkem. Za další také pracujeme s celým úložištěm.
 To znamená, že budeme vypisovat informace o aktuálním adresáři, ale i informace úložišti.
