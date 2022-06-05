@@ -1,0 +1,79 @@
+create -f file
+create -d dir
+create -l link file
+create -f file
+create -t file
+
+create -f "spaced file"
+create -d "spaced dir"
+create -l "spaced link" "spaced file"
+create -f "spaced file"
+
+copy file file2
+copy dir dir2
+copy link link2
+copy file file2
+copy file
+copy file file2 file3
+copy nonono file0
+
+copy -r .*2 excopy
+
+copy "spaced file" file3
+copy "spaced dir" dir3
+copy "spaced link" link3
+copy "spaced file" file3
+
+move file Refile2
+move dir Redir2
+move link Relink2
+move file Refile2
+move file
+move file file2 file3
+move nononon Refile
+
+move -r Re.*2 exmove
+
+move "spaced file" Refile3
+move "spaced dir" Redir3
+move "spaced link" Relink3
+move "spaced file" Refile3
+
+delete Refile2
+delete Redir2
+delete Relink2
+
+delete "spaced file"
+delete "spaced dir"
+delete "spaced link"
+delete "spaced file"
+
+delete -r Re.*3 
+
+write file "testovací text"
+write dir "test"
+
+print file
+print prohlaseni.txt
+print gogogg
+
+change src
+change rereww
+
+list
+list -l
+list -t
+
+media
+media -p
+
+current
+current -o
+
+help
+
+unknown
+
+end
+
+

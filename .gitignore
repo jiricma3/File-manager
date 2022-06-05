@@ -91,7 +91,6 @@ _deps
 
 build/
 doc/
-examples/
 jiricma3
 *.zip
 
