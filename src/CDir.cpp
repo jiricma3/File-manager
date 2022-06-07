@@ -34,10 +34,12 @@ void CDir::createFile() const
 {
     const string cp = setPath();
 
-    if(!create_directory(cp))
+    if(dirExists(cp))
     {
         throw CExeption(extxtd.AlreadyExists);
     }
+
+    create_directory(cp);
 }
 
 void CDir::copyFile(const string& to) const 

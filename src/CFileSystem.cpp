@@ -17,7 +17,6 @@ vector<shared_ptr<CFileType>> CFileSystem::m_Vec;
 
 struct Properties
 {
-    Properties() = default;
     string dirColor = "\033[38;2;0;140;212m";
     string fileColor = "\033[38;2;255;255;255m";
     string linkColor = "\033[38;2;210;0;200m";
@@ -55,21 +54,21 @@ void CFileSystem::printFileSystem() const
         string file = it->getFileName();
         string name = file.substr(file.find_last_of("/\\") + 1);
 
-        if(is_directory(it->getFileName()))
+        if(is_directory(file))
         {
             cout << ++i << ".\t" << pr.dirColor << name << pr.resetColor << endl;
             cout << setfill('-') << setw(width) << "\n";
             continue;
         }
 
-        if(is_symlink(it->getFileName()))
+        if(is_symlink(file))
         {
             cout << ++i << ".\t" << pr.linkColor << name << pr.resetColor << endl;
             cout << setfill('-') << setw(width) << "\n";
             continue;
         }
 
-        if(is_regular_file(it->getFileName()))
+        if(is_regular_file(file))
         {
             cout << ++i << ".\t" << pr.fileColor << name << pr.resetColor << endl;
             cout << setfill('-') << setw(width) << "\n";
@@ -118,25 +117,25 @@ void CFileSystem::printFileSystemLong() const
         string file = it->getFileName();
         string name = file.substr(file.find_last_of("/\\") + 1);
 
-        if(is_directory(it->getFileName()))
+        if(is_directory(file))
         {
-            cout << ++i << ".\t" << (pw != 0 ? pw->pw_name : "no owner") << "\t" << (gr != 0 ? gr->gr_name : "no group") <<
+            cout << ++i << ".\t" << (pw != 0 ? pw->pw_name : "unknown") << "\t" << (gr != 0 ? gr->gr_name : "unknown") <<
             "\t" << st.st_size << "\t   " << tim << "\t\t" << pr.dirColor << name << pr.resetColor << endl;
             cout << setfill('-') << setw(width) << "\n";
             continue;
         }
 
-        if(is_symlink(it->getFileName()))
+        if(is_symlink(file))
         {
-            cout << ++i << ".\t" << (pw != 0 ? pw->pw_name : "no owner") << "\t" << (gr != 0 ? gr->gr_name : "no group") <<
+            cout << ++i << ".\t" << (pw != 0 ? pw->pw_name : "unknown") << "\t" << (gr != 0 ? gr->gr_name : "unknown") <<
             "\t" << st.st_size << "\t   " << tim << "\t\t" << pr.linkColor << name << pr.resetColor << endl;
             cout << setfill('-') << setw(width) << "\n";
             continue;
         }
 
-        if(is_regular_file(it->getFileName()))
+        if(is_regular_file(file))
         {
-            cout << ++i << ".\t" << (pw != 0 ? pw->pw_name : "no owner") << "\t" << (gr != 0 ? gr->gr_name : "no group") <<
+            cout << ++i << ".\t" << (pw != 0 ? pw->pw_name : "unknown") << "\t" << (gr != 0 ? gr->gr_name : "unknown") <<
             "\t" << st.st_size << "\t   " << tim << "\t\t" << pr.fileColor << name << pr.resetColor << endl;
             cout << setfill('-') << setw(width) << "\n";
             continue;
@@ -145,8 +144,6 @@ void CFileSystem::printFileSystemLong() const
         free(pw);
         free(gr);
     }
-
-    
 }
 
 bool CFileSystem::changeDirectory(const string& to) const

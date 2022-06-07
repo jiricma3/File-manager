@@ -1,5 +1,6 @@
 #include <iostream>
 #include <sstream>
+#include <iomanip>
 
 #include "CCommandProcess.h"
 
@@ -19,20 +20,10 @@ int main()
         fs.loadFiles();
         getline(cin, line);
         stringstream iss(line);
-        int cnt = 0;
 
-        while (iss >> quoted(word)) 
+        while (iss >> quoted(word))
         {   
-            if(cnt == 0)
-            {
-                transform(word.begin(), word.end(), word.begin(), [](unsigned char c)
-                {
-                    return tolower(c);
-                });
-            }
-
             vec.push_back(word);
-            cnt++;
         }
 
         try

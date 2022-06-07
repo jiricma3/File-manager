@@ -106,4 +106,12 @@ class CWrite : public CCommand
         virtual void doCom(const string&, const string&) const override;
 };
 
+class CError : public CCommand
+{
+    public:
+        CError() = default;
+        CError(const CMedia&) = delete;
+        virtual void doCom() const override;
+};
+
 #endif

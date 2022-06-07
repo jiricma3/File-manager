@@ -163,7 +163,11 @@ void CChange::doCom(const string& to) const
 
 void CHelp::doCom() const
 {
-    cout << "Usage: <command> [option] <source> <destination>\n\n";
+    cout << "Usage:\t<command> [option] <source> <destination>\n";
+    cout << "\t<command> [option] <file>\n";
+    cout << "\t<command> [option]\n";
+    cout << "\t<command> <file>\n";
+    cout << "\t<command>\n\n";
     cout << "Commands:\n" << "\tcreate  -  Options: -f\tParams(1): 1. Path to create a file.   Description: Create regular file.\n";
     cout << "\t\t\t    -d\tParams(1): 1. Path to create a directory.   Description: Create directory.\n";
     cout << "\t\t\t    -l\tParams(2): 1. Path to create a symlink, 2. Target file.   Description: Create symbolic link.\n\n";
@@ -204,4 +208,9 @@ void CWrite::doCom(const string& path, const string& content) const
         file << content;
         file.close();
     }
+}
+
+void CError::doCom() const
+{
+    cout << "Unknown command. Type \"help\" for assistance menu." << endl;
 }

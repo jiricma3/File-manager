@@ -9,32 +9,7 @@ using namespace std;
 
 ExTxt extxt;
 
-enum code
-{
-    UNDEFINED,
-    CREATE,
-    COPY,
-    MOVE,
-    DELETE,
-    LIST,
-    MEDIA,
-    CHANGE,
-    PRINT,
-    HELP,
-    END,
-    CURRENT
-};
-
-enum opt
-{
-    UN,
-    R,
-    F,
-    D,
-    L
-};
-
-map<string, opt> opts;
+vector<string> opts;
 vector<string> vec;
 
 void initCom()
@@ -55,41 +30,33 @@ void initCom()
 
 void initOpt()
 {
-    opts["-r"] = R;
-    opts["-f"] = F;
-    opts["-d"] = D;
-    opts["-l"] = L;
+    opts.push_back("-r");
+    opts.push_back("-f");
+    opts.push_back("-d");
+    opts.push_back("-l");
 }
 
 int CCommandProcess::getOption() const
 {
     initOpt();
+    int i = 1;
 
     if(m_Vec.size() < 2)
     {
         return -1;
     }
 
-    switch(opts[m_Vec[1]])
+    for(const auto& it : opts)
     {
-        case R:
-                return 1;
-            
-        case F:
-                return 2;
-            
-        case D:
-                return 3;
-            
-        case L:
-                return 4;
-        
-        case UN:
-                return 5;
+        if(it.compare(m_Vec[1]) == 0)
+        {
+            return i;
+        }
 
-        default:
-                return 5;
+        i++;
     }
+
+    return ++i;
 }
 
 bool CCommandProcess::matchRegex(const string& expression, const string& str) const
@@ -152,12 +119,18 @@ void CCommandProcess::help() const
 
 void CCommandProcess::end() const
 {
+    if(m_Vec.size() != 1)
+    {
+        sendHelpCom(CError());
+        return;
+    }
+
     throw runtime_error("exit");
 }
 
 void CCommandProcess::current() const
 {
-    sendHelpCom(CCurrent());
+    sendFileCom(CCurrent());
 }
 
 void CCommandProcess::write() const
@@ -167,10 +140,10 @@ void CCommandProcess::write() const
 
 void CCommandProcess::sendCreateCom(const CCommand& c, int res) const
 {
-    if(res == 2) m_Vec.size() == 3 ? c.doCom(CFile(m_Vec[2])) : sendHelpCom(CHelp());
-    if(res == 3) m_Vec.size() == 3 ? c.doCom(CDir(m_Vec[2])) : sendHelpCom(CHelp());
-    if(res == 4) m_Vec.size() == 4 ? c.doCom(CLink(m_Vec[2], m_Vec[3])) : sendHelpCom(CHelp());
-    if(res < 0 || res > 4) sendHelpCom(CHelp());
+    if(res == 2) m_Vec.size() == 3 ? c.doCom(CFile(m_Vec[2])) : sendHelpCom(CError());
+    if(res == 3) m_Vec.size() == 3 ? c.doCom(CDir(m_Vec[2])) : sendHelpCom(CError());
+    if(res == 4) m_Vec.size() == 4 ? c.doCom(CLink(m_Vec[2], m_Vec[3])) : sendHelpCom(CError());
+    if(res < 0 || res > 4) sendHelpCom(CError());
 }
 
 string CCommandProcess::getFile(const string& file, int cnt) const
@@ -198,9 +171,9 @@ void CCommandProcess::sendFileCom(const CCommand& c, int res) const
     bool reg;
     bool found = false;
 
-    if(res == -1 || (res == 1 && m_Vec.size() != 4) || (res == 5 && m_Vec.size() != 3))
+    if(res == -1 || (res == 1 && m_Vec.size() != 4) || (res == 5 && m_Vec.size() != 3) || (res != 1 && m_Vec.size() != 3))
     {
-        sendHelpCom(CHelp());
+        sendHelpCom(CError());
         return;
     }
 
@@ -253,7 +226,7 @@ void CCommandProcess::sendFileCom(const CCommand& c, bool l) const
 {
     if((m_Vec.size() != 1 && l == false) || (m_Vec.size() != 2 && l == true))
     {
-        sendHelpCom(CHelp());
+        sendHelpCom(CError());
         return;
     }
 
@@ -264,7 +237,7 @@ void CCommandProcess::sendFileCom(const CCommand& c) const
 {
     if(m_Vec.size() != 1)
     {
-        sendHelpCom(CHelp());
+        sendHelpCom(CError());
         return;
     }
 
@@ -275,7 +248,7 @@ void CCommandProcess::sendFileCom(const CCommand& c, const string& src) const
 {
     if(m_Vec.size() != 2)
     {
-        sendHelpCom(CHelp());
+        sendHelpCom(CError());
         return;
     }
 
@@ -290,7 +263,7 @@ void CCommandProcess::sendDelCom(const CCommand& c, int res) const
 
     if(res == -1 || (res == 1 && m_Vec.size() != 3) || (res == 5 && m_Vec.size() != 2))
     {
-        sendHelpCom(CHelp());
+        sendHelpCom(CError());
         return;
     }
 
@@ -348,7 +321,7 @@ void CCommandProcess::sendWriteCom(const CCommand& c, const string& path, const 
 {
     if(m_Vec.size() != 3)
     {
-        sendHelpCom(CHelp());
+        sendHelpCom(CError());
         return;
     }
     
@@ -413,7 +386,7 @@ void CCommandProcess::getCom(int i) const
     }
 }
 
-void CCommandProcess::processCommand() const
+void CCommandProcess::processCommand()
 {
     initCom();
     int i = 0;
@@ -422,6 +395,11 @@ void CCommandProcess::processCommand() const
     {
         return;
     }
+
+    transform(m_Vec[0].begin(), m_Vec[0].end(), m_Vec[0].begin(), [](unsigned char c)
+    {
+        return tolower(c);
+    });
 
     for(const auto& it : vec)
     {
@@ -434,5 +412,5 @@ void CCommandProcess::processCommand() const
         i++;
     }
 
-    getCom(8);
+    sendFileCom(CError());
 }

@@ -19,7 +19,7 @@ class CCommandProcess
     private:
         void getCom(int) const;
         int getOption() const;
-        void processCommand() const;
+        void processCommand();
         void create() const;
         void copy() const;
         void move() const;

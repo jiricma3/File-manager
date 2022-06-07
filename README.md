@@ -21,7 +21,7 @@ To znamená, že budeme vypisovat informace o aktuálním adresáři, ale i info
 Soubory je možné libovolně kopírovat, přesouvat i mazat. Tyto operace je možné provádět i pomocí regulárních výrazů.
 Pro práci se soubory je vyhotoveno vypisování jejich obsahu nebo zapisování textu do souboru.
 Programem je možné měnit aktuální adresář a vypsat, kde se právě nacházíme. Existuje možnost program bezpečně ukončit.
-Program nabízí nápovědu, jak program používat. Soubory jsou rozlišeny barevně.
+Program nabízí nápovědu, jak program používat. Soubory jsou rozlišeny barevně. Bíle je vypsán klasický soubor, modře adresář a řůžově symbolický odkaz.
 Program se ovládá příkazy do terminálu.
 
 ##### Takové příkazy jsou:
