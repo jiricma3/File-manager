@@ -245,7 +245,7 @@ void CCommandProcess::sendCreateCom(const CCommand& c, int res) const
     if(res == 2) m_Vec.size() == 3 ? c.doCom(CFile(m_Vec[2])) : sendHelpCom(CError());
     if(res == 3) m_Vec.size() == 3 ? c.doCom(CDir(m_Vec[2])) : sendHelpCom(CError());
     if(res == 4) m_Vec.size() == 4 ? c.doCom(CLink(m_Vec[2], m_Vec[3])) : sendHelpCom(CError());
-    if(res < 0 || res > 4) sendHelpCom(CError());
+    if(res < 2 || res > 4) sendHelpCom(CError());
 }
 
 /**
