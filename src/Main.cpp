@@ -6,6 +6,13 @@
 
 using namespace std;
 
+/**
+ * @brief Function for data collection from standard input.
+ * 
+ * See also CFileSystem::printFileSystem(), CFileSystem::loadFiles(), CCommandProcess::passCommand(), CException::what(), CFileSystem, CCommandProcess, CException.
+ * 
+ * @return Exit value.
+ */
 int main()
 {
     CFileSystem fs;
@@ -34,7 +41,7 @@ int main()
         {
             return EXIT_SUCCESS;
         }
-        catch(const CExeption& e)
+        catch(const CException& e)
         {
             cout << e.what() << endl;
         }

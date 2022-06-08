@@ -5,6 +5,12 @@
 
 using namespace std;
 
+/**
+ * @brief Parent class for all supported commands.
+ * 
+ * Contains virtual methods that are overridden in derived classes.
+ * 
+ */
 class CCommand
 {
     public:
@@ -18,6 +24,12 @@ class CCommand
         virtual void doCom(const string&, const string&) const {}
 };
 
+/**
+ * @brief Class for the create command.
+ * 
+ * Creates the desired file on disk.
+ * 
+ */
 class CCreate : public CCommand
 {
     public:
@@ -26,6 +38,12 @@ class CCreate : public CCommand
         virtual void doCom(const CFileType&) const override;
 };
 
+/**
+ * @brief Class for the copy command.
+ * 
+ * Copies files from location A to location B.
+ * 
+ */
 class CCopy : public CCommand
 {
     public:
@@ -34,6 +52,12 @@ class CCopy : public CCommand
         virtual void doCom(const CFileType&, const string&) const override;
 };
 
+/**
+ * @brief Class for the move command.
+ * 
+ * Moves files from location A to location B
+ * 
+ */
 class CMove : public CCommand
 {
     public:
@@ -42,6 +66,12 @@ class CMove : public CCommand
         virtual void doCom(const CFileType&, const string&) const override;
 };
 
+/**
+ * @brief Class for the delete command.
+ * 
+ * Deletes files from the specified path.
+ * 
+ */
 class CDelete : public CCommand
 {
     public:
@@ -50,6 +80,12 @@ class CDelete : public CCommand
         virtual void doCom(const CFileType&) const override;
 };
 
+/**
+ * @brief Class for the print command.
+ * 
+ * Lists the file contents.
+ * 
+ */
 class CPrint : public CCommand
 {
     public:
@@ -58,6 +94,12 @@ class CPrint : public CCommand
         virtual void doCom(const string&) const override;
 };
 
+/**
+ * @brief Class for the list command.
+ * 
+ * Lists the directory contents.
+ * 
+ */
 class CList : public CCommand
 {
     public:
@@ -66,6 +108,12 @@ class CList : public CCommand
         virtual void doCom(bool) const override;
 };
 
+/**
+ * @brief Class for the media command.
+ * 
+ * Lists disk space usage information.
+ * 
+ */
 class CMedia : public CCommand
 {
     public:
@@ -74,6 +122,12 @@ class CMedia : public CCommand
         virtual void doCom() const override;
 };
 
+/**
+ * @brief Class for the change command.
+ * 
+ * Changes the current working directory.
+ * 
+ */
 class CChange : public CCommand
 {
     public:
@@ -82,6 +136,12 @@ class CChange : public CCommand
         virtual void doCom(const string&) const override;
 };
 
+/**
+ * @brief Class for the help command.
+ * 
+ * Lists the help menu.
+ * 
+ */
 class CHelp : public CCommand
 {
     public:
@@ -90,6 +150,12 @@ class CHelp : public CCommand
         virtual void doCom() const override;
 };
 
+/**
+ * @brief Class for the current command.
+ * 
+ * Lists the current directory in which the user is located.
+ * 
+ */
 class CCurrent : public CCommand
 {
     public:
@@ -98,6 +164,12 @@ class CCurrent : public CCommand
         virtual void doCom() const override;
 };
 
+/**
+ * @brief Class for the write command.
+ * 
+ * Writes text to a file.
+ * 
+ */
 class CWrite : public CCommand
 {
     public:
@@ -106,11 +178,17 @@ class CWrite : public CCommand
         virtual void doCom(const string&, const string&) const override;
 };
 
+/**
+ * @brief Error class for indicating unknown commands.
+ * 
+ * Resolves unknown commands.
+ * 
+ */
 class CError : public CCommand
 {
     public:
         CError() = default;
-        CError(const CMedia&) = delete;
+        CError(const CError&) = delete;
         virtual void doCom() const override;
 };
 

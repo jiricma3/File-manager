@@ -5,10 +5,22 @@
 
 using namespace std;
 
+/**
+ * @brief A class representing a directory on a disk.
+ * 
+ * Used to work with directories.
+ * 
+ */
 class CDir : public CFileType
 {
     public:
         CDir() = default;
+
+        /**
+         * @brief Constructing a new CDir object.
+         * 
+         * @param[in] name Desired name.
+         */
         CDir(const string& name) : CFileType(name) {}
         virtual const string setName(const string&) const override;
         virtual void createFile() const override;

@@ -9,12 +9,17 @@
 using namespace std;
 using namespace std::filesystem;
 
+/**
+ * @brief Processing and parsing incoming commands.
+ * 
+ * This class gets a vector of arguments from standard input, processes it and calls the required command.
+ */
 class CCommandProcess
 {
     public:
         CCommandProcess() = default;
         ~CCommandProcess() = default;
-        void passCommand(vector<string>& vec) { m_Vec = vec; processCommand(); }
+        void passCommand(vector<string>&);
 
     private:
         void getCom(int) const;
@@ -42,7 +47,7 @@ class CCommandProcess
         void sendWriteCom(const CCommand&, const string&, const string&) const;
         bool matchRegex(const string&, const string&) const;
         string getFile(const string&, int) const;
-        vector<string> m_Vec;
+        vector<string> m_Vec; ///< Vector containing command arguments.
 };
 
 #endif

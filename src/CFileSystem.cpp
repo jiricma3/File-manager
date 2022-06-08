@@ -15,14 +15,11 @@ using namespace std::filesystem;
 
 vector<shared_ptr<CFileType>> CFileSystem::m_Vec;
 
-struct Properties
-{
-    string dirColor = "\033[38;2;0;140;212m";
-    string fileColor = "\033[38;2;255;255;255m";
-    string linkColor = "\033[38;2;210;0;200m";
-    string resetColor = "\033[0m";
-};
-
+/**
+ * @brief Getting the current terminal width.
+ * 
+ * @return Terminal width.
+ */
 int getWidth()
 {
     struct winsize size;
@@ -30,9 +27,14 @@ int getWidth()
     return size.ws_col;
 }
 
+/**
+ * @brief Printing a short listing of the contents of the directory to standard output.
+ * 
+ * See also getWidth(), loadFiles(), CFileType::getFileName(), CProperties.
+ */
 void CFileSystem::printFileSystem() const
 {
-    Properties pr;
+    CProperties pr;
     
     int width = getWidth();
     int i = 0;
@@ -77,6 +79,13 @@ void CFileSystem::printFileSystem() const
     }
 }
 
+/**
+ * @brief Getting file attributes.
+ * 
+ * @param[in] it File name.
+ * @param[in, out] st Pointer to struct stat.
+ * @param[in, out] tim Character array with attributes.
+ */
 void getFileStats(const string& it, struct stat * st, char tim[80])
 {
     stat(it.c_str(), st);
@@ -86,9 +95,14 @@ void getFileStats(const string& it, struct stat * st, char tim[80])
     strftime(tim, 80, "%b %d %H:%M", &tm);
 }
 
+/**
+ * @brief Printing a long, more detailed listing of the contents of the directory to standard output.
+ * 
+ * See also getWidth(), loadFiles(), CFileType::getFileName(), CProperties.
+ */
 void CFileSystem::printFileSystemLong() const
 {
-    Properties pr;
+    CProperties pr;
     
     int width = getWidth();
     int i = 0;
@@ -146,6 +160,17 @@ void CFileSystem::printFileSystemLong() const
     }
 }
 
+/**
+ * @brief Changing the current directory.
+ * 
+ * After a successful directory change, its contents are listed.
+ * 
+ * Se also printFileSystem().
+ * 
+ * @param[in] to Directory path.
+ * @return true - success.
+ * @return false - failure.
+ */
 bool CFileSystem::changeDirectory(const string& to) const
 {
     if(chdir(to.c_str()) != 0)
@@ -158,16 +183,37 @@ bool CFileSystem::changeDirectory(const string& to) const
     return true;
 }
 
+/**
+ * @brief Getting a reference to the vector of files.
+ * 
+ * @return Vector of files reference.
+ */
 vector<shared_ptr<CFileType>> & CFileSystem::getVector()
 {
     return m_Vec;
 }
 
+/**
+ * @brief Load files from the given path into the vector.
+ * 
+ * See also loadVector().
+ * 
+ * @param[in] path Source directory.
+ */
 void CFileSystem::loadFiles(const string& path) const
 {
     loadVector(path);
 }
 
+/**
+ * @brief Load files from the given path into the vector.
+ * 
+ * The method creates a new object for each file in the directory and then stores the pointer in a vector.
+ * 
+ * See also #m_Vec, CLink, CDir, CFile.
+ * 
+ * @param[in] path Source directory.
+ */
 void CFileSystem::loadVector(const string& path) const
 {
     m_Vec.clear();
@@ -201,6 +247,11 @@ void CFileSystem::loadVector(const string& path) const
     }
 }
 
+/**
+ * @brief Load files from the current directory into the vector.
+ * 
+ * See also loadVector().
+ */
 void CFileSystem::loadFiles() const
 {
     string cur = current_path();

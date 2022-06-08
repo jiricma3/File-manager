@@ -3,10 +3,16 @@
 
 #include <regex>
 
-#include "CExeption.h"
+#include "CException.h"
 
 using namespace std;
 
+/**
+ * @brief An abstract class representing all the files on a disk.
+ * 
+ * All derived file classes inherit methods from this class.
+ * 
+ */
 class CFileType
 {
     public:
@@ -20,10 +26,16 @@ class CFileType
         virtual void moveFile(const string&) const = 0;
 
     protected:
+
+        /**
+         * @brief Constructing a new CFileType object.
+         * 
+         * @param[in] name File name.
+         */
         CFileType(const string& name) : m_Name(name) {};
 
     private:
-        string m_Name;
+        string m_Name; ///< File name.
 };
 
 #endif
